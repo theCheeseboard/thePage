@@ -19,6 +19,7 @@
  * *************************************/
 #include "documentprovidermanager.h"
 
+#include <QUrl>
 #include "documentprovider.h"
 
 struct DocumentProviderManagerPrivate {
@@ -38,7 +39,7 @@ void DocumentProviderManager::registerDocumentProvider(DocumentProvider* provide
     d->providers.append(provider);
 }
 
-Document* DocumentProviderManager::documentFor(QString file) {
+Document* DocumentProviderManager::documentFor(QUrl file) {
     for (DocumentProvider* provider : d->providers) {
         Document* doc = provider->documentFor(file);
         if (doc) return doc;

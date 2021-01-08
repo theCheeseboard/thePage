@@ -1,4 +1,5 @@
 QT       += core gui thelib
+TARGET = thepage
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -41,3 +42,6 @@ else:unix: LIBS += -L$$OUT_PWD/../libthepage/ -lthepage
 
 INCLUDEPATH += $$PWD/../libthepage
 DEPENDPATH += $$PWD/../libthepage
+
+RESOURCES += \
+    resources.qrc

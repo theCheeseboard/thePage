@@ -23,13 +23,15 @@
 
 struct PopplerDocumentPrivate {
     Poppler::Document* document;
+    QUrl fileName;
 
     QHash<int, PopplerPage*> pages;
 };
 
-PopplerDocument::PopplerDocument(Poppler::Document* document) : Document() {
+PopplerDocument::PopplerDocument(Poppler::Document* document, QUrl filename) : Document() {
     d = new PopplerDocumentPrivate();
     d->document = document;
+    d->fileName = filename;
 }
 
 PopplerDocument::~PopplerDocument() {
@@ -41,6 +43,9 @@ PopplerDocument::~PopplerDocument() {
     delete d;
 }
 
+QUrl PopplerDocument::fileName() {
+    return d->fileName;
+}
 
 Page* PopplerDocument::page(int pageNumber) {
     PopplerPage* page = d->pages.value(pageNumber, nullptr);
@@ -60,7 +65,8 @@ int PopplerDocument::pageCount() {
 QString PopplerDocument::title() {
     QString title = d->document->title();
     if (title.isEmpty()) {
-        title = tr("PDF Document");
+        title = d->fileName.fileName();
+//        title = tr("PDF Document");
     }
     return title;
 }
@@ -71,4 +77,12 @@ bool PopplerDocument::requiresPassword() {
 
 bool PopplerDocument::providePassword(QString password) {
     return d->document->unlock(QByteArray(), password.toUtf8());
+}
+
+bool PopplerDocument::save(QIODevice* device) {
+    Poppler::PDFConverter* converter = d->document->pdfConverter();
+    converter->setOutputDevice(device);
+    bool success = converter->convert();
+    delete converter;
+    return success;
 }

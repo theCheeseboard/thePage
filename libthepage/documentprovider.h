@@ -28,7 +28,7 @@ class DocumentProvider : public QObject {
     public:
         explicit DocumentProvider();
 
-        virtual Document* documentFor(QString filename) = 0;
+        virtual Document* documentFor(QUrl filename) = 0;
 
     signals:
 

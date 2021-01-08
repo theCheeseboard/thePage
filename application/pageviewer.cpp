@@ -21,14 +21,18 @@
 #include "ui_pageviewer.h"
 
 #include <QPainter>
+#include <QCache>
 #include <page.h>
 
 struct PageViewerPrivate {
     Page* page;
     double zoom = 1;
 
-    QImage pageImage;
+    static QCache<PageViewer*, QImage> pageImages;
+    bool pageLoadRequested = false;
 };
+
+QCache<PageViewer*, QImage> PageViewerPrivate::pageImages(536870912); //512 MiB
 
 PageViewer::PageViewer(QWidget* parent) :
     QWidget(parent),
@@ -39,30 +43,39 @@ PageViewer::PageViewer(QWidget* parent) :
 }
 
 PageViewer::~PageViewer() {
+    d->pageImages.remove(this);
     delete ui;
     delete d;
 }
 
 void PageViewer::setPage(Page* page) {
     d->page = page;
-    updatePageImage();
+
+    d->pageImages.remove(this);
 }
 
 void PageViewer::setZoom(double zoom) {
     d->zoom = zoom;
-    updatePageImage();
+    updateGeometry();
+
+    d->pageImages.remove(this);
 }
 
 void PageViewer::updatePageImage() {
+    if (d->pageLoadRequested) return;
+
+    d->pageLoadRequested = true;
     d->page->render(d->zoom)->then([ = ](QImage image) {
-        d->pageImage = image;
-        updateGeometry();
+        d->pageImages.insert(this, new QImage(image), image.sizeInBytes());
+        d->pageLoadRequested = false;
+        this->update();
     });
 }
 
 QSize PageViewer::sizeHint() const {
     if (!d->page) return QSize();
-    return d->pageImage.size();
+//    return d->pageImage.size();
+    return (d->page->pageSize() * d->zoom).toSize();
 }
 
 void PageViewer::paintEvent(QPaintEvent* event) {
@@ -70,8 +83,20 @@ void PageViewer::paintEvent(QPaintEvent* event) {
 
     QPainter painter(this);
 
-    QRect rect;
-    rect.setSize(d->pageImage.size());
-    rect.moveCenter(QPoint(this->width() / 2, this->height() / 2));
-    painter.drawImage(rect, d->pageImage);
+    QImage* image = d->pageImages.object(this);
+
+    if (image) {
+        QRect rect;
+        rect.setSize(image->size());
+        rect.moveCenter(QPoint(this->width() / 2, this->height() / 2));
+        painter.drawImage(rect, *image);
+    } else {
+        //TODO: show a white page or something?
+        updatePageImage();
+
+        QRect rect;
+        rect.setSize(this->sizeHint());
+        rect.moveCenter(QPoint(this->width() / 2, this->height() / 2));
+        painter.fillRect(rect, Qt::white);
+    }
 }

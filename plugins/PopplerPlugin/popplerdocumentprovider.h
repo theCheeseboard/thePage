@@ -32,7 +32,7 @@ class PopplerDocumentProvider : public DocumentProvider {
 
         // DocumentProvider interface
     public:
-        Document* documentFor(QString filename);
+        Document* documentFor(QUrl filename);
 };
 
 #endif // POPPLERDOCUMENTPROVIDER_H

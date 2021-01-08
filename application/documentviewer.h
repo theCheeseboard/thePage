@@ -34,7 +34,9 @@ class DocumentViewer : public QWidget {
         explicit DocumentViewer(QWidget* parent = nullptr);
         ~DocumentViewer();
 
-        void openFile(QString file);
+        void openFile(QUrl file);
+        void showOpenFileDialog();
+        bool isDocumentOpen();
 
         QString title();
 
@@ -46,6 +48,12 @@ class DocumentViewer : public QWidget {
         void on_zoomBox_valueChanged(double arg1);
 
         void on_unlockButton_clicked();
+
+        void updateCurrentPageNumber();
+
+        void on_prevPageButton_clicked();
+
+        void on_nextPageButton_clicked();
 
     signals:
         void titleChanged(QString title);

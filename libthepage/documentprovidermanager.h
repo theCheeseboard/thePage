@@ -34,7 +34,7 @@ class DocumentProviderManager : public QObject {
 
         void registerDocumentProvider(DocumentProvider* provider);
 
-        Document* documentFor(QString file);
+        Document* documentFor(QUrl file);
 
     signals:
 

@@ -32,7 +32,7 @@
    <item>
     <widget class="tStackedWidget" name="stackedWidget">
      <property name="currentIndex">
-      <number>0</number>
+      <number>2</number>
      </property>
      <widget class="QWidget" name="landingPage">
       <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -111,7 +111,7 @@
          </property>
          <property name="sizeHint" stdset="0">
           <size>
-           <width>93</width>
+           <width>71</width>
            <height>20</height>
           </size>
          </property>
@@ -171,7 +171,7 @@
              </font>
             </property>
             <property name="text">
-             <string notr="true">Unlock this document</string>
+             <string notr="true">Enter the password to unlock this document</string>
             </property>
            </widget>
           </item>
@@ -276,7 +276,7 @@
          </property>
          <property name="sizeHint" stdset="0">
           <size>
-           <width>93</width>
+           <width>70</width>
            <height>20</height>
           </size>
          </property>
@@ -346,7 +346,7 @@
                <x>0</x>
                <y>0</y>
                <width>722</width>
-               <height>543</height>
+               <height>554</height>
               </rect>
              </property>
              <layout class="QVBoxLayout" name="verticalLayout_6">
@@ -389,6 +389,19 @@
         </widget>
        </item>
        <item>
+        <widget class="Line" name="line">
+         <property name="maximumSize">
+          <size>
+           <width>16777215</width>
+           <height>1</height>
+          </size>
+         </property>
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+        </widget>
+       </item>
+       <item>
         <widget class="QWidget" name="widget" native="true">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
@@ -397,30 +410,104 @@
           </sizepolicy>
          </property>
          <layout class="QHBoxLayout" name="horizontalLayout">
+          <property name="spacing">
+           <number>0</number>
+          </property>
+          <property name="leftMargin">
+           <number>0</number>
+          </property>
+          <property name="topMargin">
+           <number>0</number>
+          </property>
+          <property name="rightMargin">
+           <number>0</number>
+          </property>
+          <property name="bottomMargin">
+           <number>0</number>
+          </property>
           <item>
-           <spacer name="horizontalSpacer">
-            <property name="orientation">
-             <enum>Qt::Horizontal</enum>
+           <widget class="QToolButton" name="prevPageButton">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
             </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>249</width>
-              <height>20</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
-          <item>
-           <widget class="QLabel" name="label_2">
             <property name="text">
-             <string>Page</string>
+             <string notr="true"/>
+            </property>
+            <property name="icon">
+             <iconset theme="go-previous"/>
             </property>
            </widget>
           </item>
           <item>
-           <widget class="QSpinBox" name="pageSpin">
-            <property name="minimum">
-             <number>1</number>
+           <layout class="QHBoxLayout" name="horizontalLayout_7">
+            <property name="spacing">
+             <number>0</number>
+            </property>
+            <property name="leftMargin">
+             <number>3</number>
+            </property>
+            <property name="topMargin">
+             <number>3</number>
+            </property>
+            <property name="rightMargin">
+             <number>3</number>
+            </property>
+            <property name="bottomMargin">
+             <number>3</number>
+            </property>
+            <item>
+             <widget class="QSpinBox" name="pageSpin">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="frame">
+               <bool>false</bool>
+              </property>
+              <property name="alignment">
+               <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+              </property>
+              <property name="buttonSymbols">
+               <enum>QAbstractSpinBox::NoButtons</enum>
+              </property>
+              <property name="minimum">
+               <number>1</number>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QLabel" name="pageCountBox">
+              <property name="enabled">
+               <bool>false</bool>
+              </property>
+              <property name="text">
+               <string notr="true">TextLabel</string>
+              </property>
+              <property name="margin">
+               <number>0</number>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+          <item>
+           <widget class="QToolButton" name="nextPageButton">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="text">
+             <string notr="true"/>
+            </property>
+            <property name="icon">
+             <iconset theme="go-next"/>
             </property>
            </widget>
           </item>
@@ -431,7 +518,7 @@
             </property>
             <property name="sizeHint" stdset="0">
              <size>
-              <width>249</width>
+              <width>456</width>
               <height>20</height>
              </size>
             </property>

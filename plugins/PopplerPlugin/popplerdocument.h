@@ -27,7 +27,7 @@ struct PopplerDocumentPrivate;
 class PopplerDocument : public Document {
         Q_OBJECT
     public:
-        explicit PopplerDocument(Poppler::Document* document);
+        explicit PopplerDocument(Poppler::Document* document, QUrl filename);
         ~PopplerDocument();
 
     signals:
@@ -37,11 +37,13 @@ class PopplerDocument : public Document {
 
         // Document interface
     public:
+        QUrl fileName();
         Page* page(int pageNumber);
         int pageCount();
         QString title();
         bool requiresPassword();
         bool providePassword(QString password);
+        bool save(QIODevice* device);
 };
 
 #endif // POPPLERDOCUMENT_H

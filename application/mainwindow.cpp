@@ -27,8 +27,10 @@
 #include "pluginmanager.h"
 #include <tlogger.h>
 #include <QPushButton>
+#include <QFileDialog>
 
 #include "documentviewer.h"
+
 struct MainWindowPrivate {
     tCsdTools csd;
     PluginManager plugins;
@@ -55,6 +57,7 @@ MainWindow::MainWindow(QWidget* parent)
 
     QMenu* menu = new QMenu(this);
     menu->addAction(ui->actionNew_Tab);
+    menu->addAction(ui->actionOpen);
     menu->addSeparator();
     menu->addMenu(new tHelpMenu(this));
     menu->addAction(ui->actionExit);
@@ -114,4 +117,27 @@ void MainWindow::on_stackedWidget_currentChanged(int arg1) {
     if (w) {
         d->tabButtons.value(static_cast<DocumentViewer*>(w))->click();
     }
+}
+
+void MainWindow::on_actionOpen_triggered() {
+    QWidget* w = ui->stackedWidget->currentWidget();
+    if (w) {
+        DocumentViewer* viewer = static_cast<DocumentViewer*>(w);
+        if (!viewer->isDocumentOpen()) {
+            viewer->showOpenFileDialog();
+            return;
+        }
+    }
+
+    //Open a document in a new tab
+    QFileDialog* dialog = new QFileDialog(this);
+    dialog->setAcceptMode(QFileDialog::AcceptOpen);
+    dialog->setNameFilters({"PDF Documents (*.pdf)"});
+    dialog->setFileMode(QFileDialog::AnyFile);
+    connect(dialog, &QFileDialog::fileSelected, this, [ = ](QString file) {
+        DocumentViewer* tab = newTab();
+        tab->openFile(QUrl::fromLocalFile(file));
+    });
+    connect(dialog, &QFileDialog::finished, dialog, &QFileDialog::deleteLater);
+    dialog->open();
 }

@@ -26,6 +26,10 @@
 #include <page.h>
 #include "pageviewer.h"
 #include <terrorflash.h>
+#include <ttoast.h>
+#include <tlogger.h>
+#include <QScrollBar>
+#include <QScroller>
 
 struct DocumentViewerPrivate {
     Document* currentDocument = nullptr;
@@ -40,8 +44,19 @@ DocumentViewer::DocumentViewer(QWidget* parent) :
     d = new DocumentViewerPrivate();
 
     ui->stackedWidget->setCurrentAnimation(tStackedWidget::Fade);
+    ui->pagesLayout->setSpacing(SC_DPI(9));
 
+    ui->stackedWidget->setCurrentWidget(ui->landingPage, false);
     updateCurrentView();
+
+    ui->scrollArea->viewport()->installEventFilter(this);
+    connect(ui->scrollArea->verticalScrollBar(), &QScrollBar::valueChanged, this, [ = ] {
+        if (QScroller::scroller(ui->scrollArea)->state() == QScroller::Inactive) updateCurrentPageNumber();
+    });
+
+    connect(QScroller::scroller(ui->scrollArea), &QScroller::stateChanged, this, [ = ](QScroller::State state) {
+        if (state == QScroller::Inactive) updateCurrentPageNumber();
+    });
 }
 
 DocumentViewer::~DocumentViewer() {
@@ -49,15 +64,21 @@ DocumentViewer::~DocumentViewer() {
     delete ui;
 }
 
-void DocumentViewer::openFile(QString file) {
-    for (PageViewer* viewer : d->viewers) {
+void DocumentViewer::openFile(QUrl file) {
+    for (PageViewer* viewer : qAsConst(d->viewers)) {
         ui->pagesLayout->removeWidget(viewer);
         viewer->deleteLater();
     }
+    d->viewers.clear();
 
     Document* document = DocumentProviderManager::instance()->documentFor(file);
     if (!document) {
         //Error Error!
+        tToast* toast = new tToast(this);
+        toast->setTitle(tr("File Not Readable"));
+        toast->setText(tr("Sorry, that file can't be opened."));
+        connect(toast, &tToast::dismissed, toast, &tToast::deleteLater);
+        toast->show(this);
         return;
     }
     d->currentDocument = document;
@@ -66,6 +87,22 @@ void DocumentViewer::openFile(QString file) {
     ui->pageSpin->setValue(1);
 
     emit titleChanged(title());
+}
+
+void DocumentViewer::showOpenFileDialog() {
+    QFileDialog* dialog = new QFileDialog(this);
+    dialog->setAcceptMode(QFileDialog::AcceptOpen);
+    dialog->setNameFilters({"PDF Documents (*.pdf)"});
+    dialog->setFileMode(QFileDialog::AnyFile);
+    connect(dialog, &QFileDialog::fileSelected, this, [ = ](QString file) {
+        openFile(QUrl::fromLocalFile(file));
+    });
+    connect(dialog, &QFileDialog::finished, dialog, &QFileDialog::deleteLater);
+    dialog->open();
+}
+
+bool DocumentViewer::isDocumentOpen() {
+    return ui->stackedWidget->currentWidget() != ui->landingPage;
 }
 
 QString DocumentViewer::title() {
@@ -77,18 +114,11 @@ QString DocumentViewer::title() {
 }
 
 void DocumentViewer::on_openButton_clicked() {
-    QFileDialog* dialog = new QFileDialog(this);
-    dialog->setAcceptMode(QFileDialog::AcceptOpen);
-    dialog->setNameFilters({"PDF Documents (*.pdf)"});
-    dialog->setFileMode(QFileDialog::AnyFile);
-    connect(dialog, &QFileDialog::fileSelected, this, [ = ](QString file) {
-        openFile(file);
-    });
-    connect(dialog, &QFileDialog::finished, dialog, &QFileDialog::deleteLater);
-    dialog->open();
+    showOpenFileDialog();
 }
 
 void DocumentViewer::on_pageSpin_valueChanged(int arg1) {
+    QScroller::scroller(ui->scrollArea)->scrollTo(QPointF(0, d->viewers.at(arg1 - 1)->geometry().top()), 500);
     ui->renderArea->update();
 }
 
@@ -107,16 +137,29 @@ void DocumentViewer::on_unlockButton_clicked() {
     updateCurrentView();
 }
 
+void DocumentViewer::updateCurrentPageNumber() {
+    if (d->viewers.isEmpty()) return;
+    int pageNumber = 0;
+    for (PageViewer* viewer : qAsConst(d->viewers)) {
+        if (viewer->geometry().top() > ui->scrollArea->verticalScrollBar()->value() + ui->scrollArea->height() / 2) break;
+        pageNumber++;
+    }
+
+    QSignalBlocker blocker(ui->pageSpin);
+    ui->pageSpin->setValue(pageNumber);
+}
+
 void DocumentViewer::updateCurrentView() {
     if (!d->currentDocument) {
         ui->stackedWidget->setCurrentWidget(ui->landingPage);
     } else if (d->currentDocument->requiresPassword()) {
         ui->stackedWidget->setCurrentWidget(ui->passwordPage);
     } else {
-        for (PageViewer* viewer : d->viewers) {
+        for (PageViewer* viewer : qAsConst(d->viewers)) {
             ui->pagesLayout->removeWidget(viewer);
             viewer->deleteLater();
         }
+        d->viewers.clear();
 
         for (int i = 0; i < d->currentDocument->pageCount(); i++) {
             PageViewer* viewer = new PageViewer(this);
@@ -128,6 +171,15 @@ void DocumentViewer::updateCurrentView() {
         }
 
         ui->pageSpin->setMaximum(d->currentDocument->pageCount());
+        ui->pageCountBox->setText(QStringLiteral("/ %1").arg(d->currentDocument->pageCount()));
         ui->stackedWidget->setCurrentWidget(ui->documentPage);
     }
+}
+
+void DocumentViewer::on_prevPageButton_clicked() {
+    ui->pageSpin->setValue(ui->pageSpin->value() - 1);
+}
+
+void DocumentViewer::on_nextPageButton_clicked() {
+    ui->pageSpin->setValue(ui->pageSpin->value() + 1);
 }

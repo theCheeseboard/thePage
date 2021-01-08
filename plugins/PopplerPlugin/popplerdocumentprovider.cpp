@@ -21,15 +21,16 @@
 
 #include "popplerdocument.h"
 #include <poppler-qt5.h>
+#include <QUrl>
 
 PopplerDocumentProvider::PopplerDocumentProvider() : DocumentProvider() {
 
 }
 
 
-Document* PopplerDocumentProvider::documentFor(QString filename) {
-    Poppler::Document* document = Poppler::Document::load(filename);
+Document* PopplerDocumentProvider::documentFor(QUrl filename) {
+    Poppler::Document* document = Poppler::Document::load(filename.toLocalFile());
     if (!document) return nullptr;
 
-    return new PopplerDocument(document);
+    return new PopplerDocument(document, filename);
 }

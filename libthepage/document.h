@@ -23,10 +23,13 @@
 #include <QObject>
 
 class Page;
+class QIODevice;
 class Document : public QObject {
         Q_OBJECT
     public:
         explicit Document();
+
+        virtual QUrl fileName() = 0;
 
         virtual Page* page(int pageNumber) = 0;
         virtual int pageCount() = 0;
@@ -35,6 +38,8 @@ class Document : public QObject {
 
         virtual bool requiresPassword() = 0;
         virtual bool providePassword(QString password) = 0;
+
+        virtual bool save(QIODevice* device) = 0;
 
     signals:
 
