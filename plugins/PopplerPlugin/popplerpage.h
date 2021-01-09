@@ -39,7 +39,7 @@ class PopplerPage : public Page {
     public:
         QSizeF pageSize();
         tPromise<QImage>* render(double zoom);
-
+        QList<SelectionResult> selectionMade(QRect rect);
 };
 
 #endif // POPPLERPAGE_H

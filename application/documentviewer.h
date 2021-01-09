@@ -21,6 +21,7 @@
 #define DOCUMENTVIEWER_H
 
 #include <QWidget>
+#include <document.h>
 
 namespace Ui {
     class DocumentViewer;
@@ -34,9 +35,21 @@ class DocumentViewer : public QWidget {
         explicit DocumentViewer(QWidget* parent = nullptr);
         ~DocumentViewer();
 
+        enum DocumentMode {
+            Scrolling,
+            Selection
+        };
+
         void openFile(QUrl file);
         void showOpenFileDialog();
         bool isDocumentOpen();
+
+        double zoom();
+        DocumentMode documentMode();
+
+        Document* document();
+        void setBypassDRMLimitation(Document::DRMLimitation type);
+        bool isDRMBypassed(Document::DRMLimitation type);
 
         QString title();
 
@@ -55,14 +68,21 @@ class DocumentViewer : public QWidget {
 
         void on_nextPageButton_clicked();
 
+        void on_scrollingButton_toggled(bool checked);
+
+        void on_selectionButton_toggled(bool checked);
+
     signals:
         void titleChanged(QString title);
+        void zoomChanged(double zoom);
+        void documentModeChanged(DocumentMode mode);
 
     private:
         Ui::DocumentViewer* ui;
         DocumentViewerPrivate* d;
 
         void updateCurrentView();
+        void updateMouseMode();
 };
 
 #endif // DOCUMENTVIEWER_H

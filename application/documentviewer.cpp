@@ -22,7 +22,6 @@
 
 #include <QFileDialog>
 #include <documentprovidermanager.h>
-#include <document.h>
 #include <page.h>
 #include "pageviewer.h"
 #include <terrorflash.h>
@@ -34,6 +33,9 @@
 struct DocumentViewerPrivate {
     Document* currentDocument = nullptr;
     QList<PageViewer*> viewers;
+    QSet<Document::DRMLimitation> drmBypassed;
+
+    DocumentViewer::DocumentMode documentMode = DocumentViewer::Scrolling;
 };
 
 DocumentViewer::DocumentViewer(QWidget* parent) :
@@ -49,6 +51,7 @@ DocumentViewer::DocumentViewer(QWidget* parent) :
     ui->stackedWidget->setCurrentWidget(ui->landingPage, false);
     updateCurrentView();
 
+    ui->scrollArea->setProperty("X-Contemporary-NoInstallScroller", true);
     ui->scrollArea->viewport()->installEventFilter(this);
     connect(ui->scrollArea->verticalScrollBar(), &QScrollBar::valueChanged, this, [ = ] {
         if (QScroller::scroller(ui->scrollArea)->state() == QScroller::Inactive) updateCurrentPageNumber();
@@ -57,6 +60,8 @@ DocumentViewer::DocumentViewer(QWidget* parent) :
     connect(QScroller::scroller(ui->scrollArea), &QScroller::stateChanged, this, [ = ](QScroller::State state) {
         if (state == QScroller::Inactive) updateCurrentPageNumber();
     });
+
+    updateMouseMode();
 }
 
 DocumentViewer::~DocumentViewer() {
@@ -70,6 +75,8 @@ void DocumentViewer::openFile(QUrl file) {
         viewer->deleteLater();
     }
     d->viewers.clear();
+
+    d->drmBypassed.clear();
 
     Document* document = DocumentProviderManager::instance()->documentFor(file);
     if (!document) {
@@ -105,6 +112,26 @@ bool DocumentViewer::isDocumentOpen() {
     return ui->stackedWidget->currentWidget() != ui->landingPage;
 }
 
+double DocumentViewer::zoom() {
+    return ui->zoomBox->value() / 100;
+}
+
+DocumentViewer::DocumentMode DocumentViewer::documentMode() {
+    return d->documentMode;
+}
+
+Document* DocumentViewer::document() {
+    return d->currentDocument;
+}
+
+void DocumentViewer::setBypassDRMLimitation(Document::DRMLimitation type) {
+    d->drmBypassed.insert(type);
+}
+
+bool DocumentViewer::isDRMBypassed(Document::DRMLimitation type) {
+    return d->drmBypassed.contains(type);
+}
+
 QString DocumentViewer::title() {
     if (d->currentDocument) {
         return d->currentDocument->title();
@@ -123,9 +150,7 @@ void DocumentViewer::on_pageSpin_valueChanged(int arg1) {
 }
 
 void DocumentViewer::on_zoomBox_valueChanged(double arg1) {
-    for (PageViewer* viewer : qAsConst(d->viewers)) {
-        viewer->setZoom(arg1 / 100);
-    }
+    emit zoomChanged(arg1 / 100);
 }
 
 void DocumentViewer::on_unlockButton_clicked() {
@@ -165,7 +190,6 @@ void DocumentViewer::updateCurrentView() {
             PageViewer* viewer = new PageViewer(this);
             viewer->setPage(d->currentDocument->page(i));
             viewer->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Fixed);
-            viewer->setZoom(ui->zoomBox->value() / 100);
             ui->pagesLayout->addWidget(viewer);
             d->viewers.append(viewer);
         }
@@ -176,10 +200,30 @@ void DocumentViewer::updateCurrentView() {
     }
 }
 
+void DocumentViewer::updateMouseMode() {
+    QScroller::ungrabGesture(ui->scrollArea->viewport());
+    if (ui->scrollingButton->isChecked()) {
+        QScroller::grabGesture(ui->scrollArea->viewport(), QScroller::LeftMouseButtonGesture);
+        d->documentMode = Scrolling;
+    } else if (ui->selectionButton->isChecked()) {
+        d->documentMode = Selection;
+    }
+
+    emit documentModeChanged(d->documentMode);
+}
+
 void DocumentViewer::on_prevPageButton_clicked() {
     ui->pageSpin->setValue(ui->pageSpin->value() - 1);
 }
 
 void DocumentViewer::on_nextPageButton_clicked() {
     ui->pageSpin->setValue(ui->pageSpin->value() + 1);
+}
+
+void DocumentViewer::on_scrollingButton_toggled(bool checked) {
+    if (checked) updateMouseMode();
+}
+
+void DocumentViewer::on_selectionButton_toggled(bool checked) {
+    if (checked) updateMouseMode();
 }

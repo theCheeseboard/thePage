@@ -20,6 +20,7 @@
 #ifndef PAGE_H
 #define PAGE_H
 
+#include <QImage>
 #include <QObject>
 #include <tpromise.h>
 
@@ -28,8 +29,14 @@ class Page : public QObject {
     public:
         explicit Page();
 
+        struct SelectionResult {
+            QString text;
+            QImage image;
+        };
+
         virtual QSizeF pageSize() = 0;
         virtual tPromise<QImage>* render(double zoom = 1) = 0;
+        virtual QList<SelectionResult> selectionMade(QRect rect) = 0;
 
     signals:
 

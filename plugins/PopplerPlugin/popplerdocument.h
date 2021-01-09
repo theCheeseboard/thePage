@@ -44,6 +44,7 @@ class PopplerDocument : public Document {
         bool requiresPassword();
         bool providePassword(QString password);
         bool save(QIODevice* device);
+        bool isDrmEnforced(DRMLimitation limitation);
 };
 
 #endif // POPPLERDOCUMENT_H

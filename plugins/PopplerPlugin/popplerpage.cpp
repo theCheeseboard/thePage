@@ -78,3 +78,13 @@ tPromise<QImage>* PopplerPage::render(double zoom) {
         res(image);
     });
 }
+
+QList<PopplerPage::SelectionResult> PopplerPage::selectionMade(QRect rect) {
+    QList<SelectionResult> results;
+
+    SelectionResult textResult;
+    textResult.text = d->page->text(rect);
+    if (!textResult.text.isEmpty()) results.append(textResult);
+
+    return results;
+}

@@ -29,6 +29,13 @@ class Document : public QObject {
     public:
         explicit Document();
 
+        enum DRMLimitation {
+            Copy,
+            Print,
+            Edit,
+            FillForm
+        };
+
         virtual QUrl fileName() = 0;
 
         virtual Page* page(int pageNumber) = 0;
@@ -40,6 +47,8 @@ class Document : public QObject {
         virtual bool providePassword(QString password) = 0;
 
         virtual bool save(QIODevice* device) = 0;
+
+        virtual bool isDrmEnforced(DRMLimitation limitation) = 0;
 
     signals:
 

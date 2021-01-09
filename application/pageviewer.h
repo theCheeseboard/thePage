@@ -21,6 +21,7 @@
 #define PAGEVIEWER_H
 
 #include <QWidget>
+#include "documentviewer.h"
 
 namespace Ui {
     class PageViewer;
@@ -32,11 +33,12 @@ class PageViewer : public QWidget {
         Q_OBJECT
 
     public:
-        explicit PageViewer(QWidget* parent = nullptr);
+        explicit PageViewer(DocumentViewer* viewer);
         ~PageViewer();
 
         void setPage(Page* page);
         void setZoom(double zoom);
+        void setDocumentMode(DocumentViewer::DocumentMode mode);
 
     private:
         Ui::PageViewer* ui;
@@ -47,6 +49,12 @@ class PageViewer : public QWidget {
         // QWidget interface
     public:
         QSize sizeHint() const;
+
+        // QWidget interface
+    protected:
+        void mousePressEvent(QMouseEvent* event);
+        void mouseReleaseEvent(QMouseEvent* event);
+        void mouseMoveEvent(QMouseEvent* event);
 
     protected:
         void paintEvent(QPaintEvent* event);

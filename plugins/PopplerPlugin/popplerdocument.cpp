@@ -76,7 +76,7 @@ bool PopplerDocument::requiresPassword() {
 }
 
 bool PopplerDocument::providePassword(QString password) {
-    return d->document->unlock(QByteArray(), password.toUtf8());
+    return d->document->unlock(QByteArray(), password.toLatin1());
 }
 
 bool PopplerDocument::save(QIODevice* device) {
@@ -85,4 +85,18 @@ bool PopplerDocument::save(QIODevice* device) {
     bool success = converter->convert();
     delete converter;
     return success;
+}
+
+bool PopplerDocument::isDrmEnforced(Document::DRMLimitation limitation) {
+    switch (limitation) {
+        case Document::Copy:
+            return !d->document->okToCopy();
+        case Document::Print:
+            return !d->document->okToPrint();
+        case Document::Edit:
+            return !d->document->okToAddNotes();
+        case Document::FillForm:
+            return !d->document->okToFillForm();
+    }
+    return false;
 }
