@@ -40,6 +40,9 @@ class PageViewer : public QWidget {
         void setZoom(double zoom);
         void setDocumentMode(DocumentViewer::DocumentMode mode);
 
+    signals:
+        void changeZoom(double zoom, QPoint fixationPoint);
+
     private:
         Ui::PageViewer* ui;
         PageViewerPrivate* d;
@@ -55,6 +58,7 @@ class PageViewer : public QWidget {
         void mousePressEvent(QMouseEvent* event);
         void mouseReleaseEvent(QMouseEvent* event);
         void mouseMoveEvent(QMouseEvent* event);
+        void wheelEvent(QWheelEvent* event);
 
     protected:
         void paintEvent(QPaintEvent* event);

@@ -36,6 +36,8 @@ struct DocumentViewerPrivate {
     QSet<Document::DRMLimitation> drmBypassed;
 
     DocumentViewer::DocumentMode documentMode = DocumentViewer::Scrolling;
+    double fixateHScrollbar = -1, fixateVScrollbar = -1;
+    int fixateHScrollbarOffset, fixateVScrollbarOffset;
 };
 
 DocumentViewer::DocumentViewer(QWidget* parent) :
@@ -55,6 +57,18 @@ DocumentViewer::DocumentViewer(QWidget* parent) :
     ui->scrollArea->viewport()->installEventFilter(this);
     connect(ui->scrollArea->verticalScrollBar(), &QScrollBar::valueChanged, this, [ = ] {
         if (QScroller::scroller(ui->scrollArea)->state() == QScroller::Inactive) updateCurrentPageNumber();
+    });
+    connect(ui->scrollArea->verticalScrollBar(), &QScrollBar::rangeChanged, this, [ = ](int min, int max) {
+        if (d->fixateVScrollbar >= 0) {
+            ui->scrollArea->verticalScrollBar()->setValue(max * d->fixateVScrollbar - d->fixateVScrollbarOffset);
+            d->fixateVScrollbar = -1;
+        }
+    });
+    connect(ui->scrollArea->horizontalScrollBar(), &QScrollBar::rangeChanged, this, [ = ](int min, int max) {
+        if (d->fixateHScrollbar >= 0) {
+            ui->scrollArea->horizontalScrollBar()->setValue(max * d->fixateHScrollbar - d->fixateHScrollbarOffset);
+            d->fixateHScrollbar = -1;
+        }
     });
 
     connect(QScroller::scroller(ui->scrollArea), &QScroller::stateChanged, this, [ = ](QScroller::State state) {
@@ -150,6 +164,9 @@ void DocumentViewer::on_pageSpin_valueChanged(int arg1) {
 }
 
 void DocumentViewer::on_zoomBox_valueChanged(double arg1) {
+    d->fixateHScrollbar = static_cast<double>(ui->scrollArea->horizontalScrollBar()->value()) / ui->scrollArea->horizontalScrollBar()->maximum();
+    d->fixateVScrollbar = static_cast<double>(ui->scrollArea->verticalScrollBar()->value()) / ui->scrollArea->verticalScrollBar()->maximum();
+    d->fixateHScrollbarOffset = d->fixateVScrollbarOffset = 0;
     emit zoomChanged(arg1 / 100);
 }
 
@@ -190,6 +207,18 @@ void DocumentViewer::updateCurrentView() {
             PageViewer* viewer = new PageViewer(this);
             viewer->setPage(d->currentDocument->page(i));
             viewer->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Fixed);
+            connect(viewer, &PageViewer::changeZoom, this, [ = ](double zoom, QPoint fixationPoint) {
+                QPoint viewerPoint = ui->scrollAreaWidgetContents->mapFromGlobal(viewer->mapToGlobal(fixationPoint));
+                QPoint scrollerPoint = ui->scrollArea->mapFromGlobal(viewer->mapToGlobal(fixationPoint));
+                d->fixateHScrollbar = static_cast<double>(viewerPoint.x()) / ui->scrollArea->horizontalScrollBar()->maximum();
+                d->fixateVScrollbar = static_cast<double>(viewerPoint.y()) / ui->scrollArea->verticalScrollBar()->maximum();
+                d->fixateHScrollbarOffset = scrollerPoint.x();
+                d->fixateVScrollbarOffset = scrollerPoint.y();
+                emit zoomChanged(zoom);
+
+                QSignalBlocker blocker(ui->zoomBox);
+                ui->zoomBox->setValue(zoom * 100);
+            });
             ui->pagesLayout->addWidget(viewer);
             d->viewers.append(viewer);
         }

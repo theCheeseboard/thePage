@@ -141,6 +141,7 @@ void PageViewer::mouseReleaseEvent(QMouseEvent* event) {
                         QMessageBox* messageBox = new QMessageBox(this);
                         messageBox->setWindowTitle(tr("Digital Rights Management"));
                         messageBox->setText(tr("The author of this document prohibits you from copying text and images."));
+                        messageBox->setIcon(QMessageBox::Information);
                         messageBox->addButton(QMessageBox::Ok);
                         QPushButton* copyButton = messageBox->addButton(tr("Copy Anyway"), QMessageBox::DestructiveRole);
                         connect(messageBox, &QMessageBox::buttonClicked, this, [ = ](QAbstractButton * button) {
@@ -170,6 +171,21 @@ void PageViewer::mouseReleaseEvent(QMouseEvent* event) {
 void PageViewer::mouseMoveEvent(QMouseEvent* event) {
     if (d->documentMode == DocumentViewer::Selection) {
         d->selectionBand->setGeometry(QRect(d->selectionOrigin, event->pos()).normalized());
+    }
+}
+
+void PageViewer::wheelEvent(QWheelEvent* event) {
+    if (event->modifiers() == Qt::ControlModifier) {
+        QPoint pixels = event->pixelDelta();
+        QPoint angle = event->angleDelta() / 8;
+
+        if (!pixels.isNull()) {
+            emit changeZoom(d->zoom * pow(1.005, event->pixelDelta().y()), event->position().toPoint());
+        } else if (!angle.isNull()) {
+            emit changeZoom(d->zoom * pow(1.005, event->angleDelta().y() / 8), event->position().toPoint());
+        }
+
+        event->accept();
     }
 }
 
