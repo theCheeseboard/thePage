@@ -207,6 +207,12 @@ void DocumentViewer::updateCurrentView() {
             PageViewer* viewer = new PageViewer(this);
             viewer->setPage(d->currentDocument->page(i));
             viewer->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Fixed);
+            connect(viewer, &PageViewer::navigate, this, [ = ](int page, double offsetTop, double offsetLeft) {
+                QPointF scrollPoint(d->viewers.at(page)->geometry().left(), d->viewers.at(page)->geometry().top());
+                if (offsetTop > 0) scrollPoint.ry() += d->viewers.at(page)->geometry().height() * offsetTop;
+                if (offsetLeft > 0) scrollPoint.rx() += d->viewers.at(page)->geometry().width() * offsetLeft;
+                QScroller::scroller(ui->scrollArea)->scrollTo(scrollPoint, 500);
+            });
             connect(viewer, &PageViewer::changeZoom, this, [ = ](double zoom, QPoint fixationPoint) {
                 QPoint viewerPoint = ui->scrollAreaWidgetContents->mapFromGlobal(viewer->mapToGlobal(fixationPoint));
                 QPoint scrollerPoint = ui->scrollArea->mapFromGlobal(viewer->mapToGlobal(fixationPoint));

@@ -88,3 +88,61 @@ QList<PopplerPage::SelectionResult> PopplerPage::selectionMade(QRect rect) {
 
     return results;
 }
+
+QVariantMap PopplerPage::clickAction(QPointF point) {
+    for (Poppler::Link* link : d->page->links()) {
+        QRectF area(link->linkArea().left() * d->page->pageSizeF().width(), link->linkArea().top() * d->page->pageSizeF().height(), link->linkArea().width() * d->page->pageSizeF().width(), link->linkArea().height() * d->page->pageSizeF().height());
+
+        if (area.contains(point)) {
+            switch (link->linkType()) {
+                case Poppler::Link::None:
+                    break;
+                case Poppler::Link::Goto: {
+                    Poppler::LinkGoto* glink = static_cast<Poppler::LinkGoto*>(link);
+                    Poppler::LinkDestination dest = glink->destination();
+
+                    QVariantMap linkData;
+                    linkData.insert("type", "link");
+                    linkData.insert("linkType", "viewport");
+                    linkData.insert("page", dest.pageNumber() - 1);
+                    if (dest.isChangeTop()) linkData.insert("offsetTop", dest.top());
+                    if (dest.isChangeLeft()) linkData.insert("offsetLeft", dest.left());
+
+                    return linkData;
+                }
+                case Poppler::Link::Execute:
+                    break;
+                case Poppler::Link::Browse: {
+                    Poppler::LinkBrowse* blink = static_cast<Poppler::LinkBrowse*>(link);
+
+                    return {
+                        {"type", "link"},
+                        {"linkType", "url"},
+                        {"url", QUrl(blink->url())}
+                    };
+                    break;
+                }
+                case Poppler::Link::Action:
+                    break;
+                case Poppler::Link::Sound:
+                    break;
+                case Poppler::Link::Movie:
+                    break;
+                case Poppler::Link::Rendition:
+                    break;
+                case Poppler::Link::JavaScript:
+                    break;
+                case Poppler::Link::OCGState:
+                    break;
+                case Poppler::Link::Hide:
+                    break;
+
+            }
+
+            return {
+                {"type", "link"}
+            };
+        }
+    }
+    return QVariantMap();
+}

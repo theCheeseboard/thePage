@@ -31,6 +31,7 @@
 #include <document.h>
 #include <QMessageBox>
 #include <QPushButton>
+#include <QDesktopServices>
 
 struct PageViewerPrivate {
     DocumentViewer* viewer;
@@ -39,6 +40,7 @@ struct PageViewerPrivate {
 
     static QCache<PageViewer*, QImage> pageImages;
     bool pageLoadRequested = false;
+    bool mousePressed = false;
 
     DocumentViewer::DocumentMode documentMode;
 
@@ -56,6 +58,8 @@ PageViewer::PageViewer(DocumentViewer* viewer) :
     d = new PageViewerPrivate();
     d->viewer = viewer;
     d->selectionBand = new QRubberBand(QRubberBand::Rectangle, this);
+
+    this->setMouseTracking(true);
 
     connect(viewer, &DocumentViewer::zoomChanged, this, &PageViewer::setZoom);
     connect(viewer, &DocumentViewer::documentModeChanged, this, &PageViewer::setDocumentMode);
@@ -79,7 +83,7 @@ void PageViewer::setZoom(double zoom) {
     d->zoom = zoom;
     updateGeometry();
 
-    d->pageImages.remove(this);
+//    d->pageImages.remove(this);
 }
 
 void PageViewer::setDocumentMode(DocumentViewer::DocumentMode mode) {
@@ -103,6 +107,7 @@ QSize PageViewer::sizeHint() const {
 }
 
 void PageViewer::mousePressEvent(QMouseEvent* event) {
+    d->mousePressed = true;
     if (d->documentMode == DocumentViewer::Selection) {
         d->selectionOrigin = event->pos();
         d->selectionBand->setGeometry(QRect(d->selectionOrigin, QSize()));
@@ -111,16 +116,18 @@ void PageViewer::mousePressEvent(QMouseEvent* event) {
 }
 
 void PageViewer::mouseReleaseEvent(QMouseEvent* event) {
+    d->mousePressed = false;
+
+    QRect documentRect;
+    documentRect.setSize(this->sizeHint());
+    documentRect.moveCenter(QPoint(this->width() / 2, this->height() / 2));
+
     if (d->documentMode == DocumentViewer::Selection) {
         QRect bandGeometry = d->selectionBand->geometry();
         if (bandGeometry.height() * bandGeometry.width() < SC_DPI(20)) {
             d->selectionBand->hide();
             return;
         }
-
-        QRect documentRect;
-        documentRect.setSize(this->sizeHint());
-        documentRect.moveCenter(QPoint(this->width() / 2, this->height() / 2));
 
         QRect adjustedRect((bandGeometry.topLeft() - documentRect.topLeft()) / d->zoom, bandGeometry.size() / d->zoom);
         QList<Page::SelectionResult> results = d->page->selectionMade(adjustedRect);
@@ -136,7 +143,6 @@ void PageViewer::mouseReleaseEvent(QMouseEvent* event) {
             } else {
                 menu->addSection(tr("For text %1").arg(menu->fontMetrics().elidedText(QLocale().quoteString(result.text).trimmed(), Qt::ElideMiddle, SC_DPI(300))));
                 menu->addAction(QIcon::fromTheme("edit-copy"), tr("Copy"), [ = ] {
-                    //TODO: Check DRM
                     if (d->viewer->document()->isDrmEnforced(Document::Copy) && !d->viewer->isDRMBypassed(Document::Copy)) {
                         QMessageBox* messageBox = new QMessageBox(this);
                         messageBox->setWindowTitle(tr("Digital Rights Management"));
@@ -166,11 +172,58 @@ void PageViewer::mouseReleaseEvent(QMouseEvent* event) {
         });
         menu->popup(event->globalPos());
     }
+
+    //See if there is a click action
+    QVariantMap action = d->page->clickAction((event->pos() - documentRect.topLeft()) / d->zoom);
+    if (action.value("type").toString() == "link") {
+        QString linkType = action.value("linkType").toString();
+        if (linkType == "viewport") {
+            //Go to a different page
+            double offsetTop = action.value("offsetTop", -1).toDouble();
+            double offsetLeft = action.value("offfsetLeft", -1).toDouble();
+            emit navigate(action.value("page").toInt(), offsetTop, offsetLeft);
+        } else if (linkType == "url") {
+            QUrl url = action.value("url").toUrl();
+
+            this->setCursor(QCursor(Qt::ArrowCursor));
+
+            QMessageBox* messageBox = new QMessageBox(this);
+            messageBox->setWindowTitle(tr("Visit Link"));
+            messageBox->setText(tr("Visit the link %1?").arg(url.toString()));
+            messageBox->setInformativeText(tr("Make sure it's a place you trust; the web can be scary!"));
+            messageBox->setIcon(QMessageBox::Information);
+            messageBox->addButton(QMessageBox::Cancel);
+            QPushButton* acceptButton = messageBox->addButton(tr("Visit"), QMessageBox::AcceptRole);
+            connect(messageBox, &QMessageBox::buttonClicked, this, [ = ](QAbstractButton * button) {
+                if (button == acceptButton) {
+                    QDesktopServices::openUrl(url);
+                }
+            });
+            connect(messageBox, &QMessageBox::finished, messageBox, &QMessageBox::deleteLater);
+            messageBox->open();
+        }
+    }
+//    tDebug("PageViewer") << action.value("type").toString();
 }
 
 void PageViewer::mouseMoveEvent(QMouseEvent* event) {
-    if (d->documentMode == DocumentViewer::Selection) {
-        d->selectionBand->setGeometry(QRect(d->selectionOrigin, event->pos()).normalized());
+    if (d->mousePressed) {
+        if (d->documentMode == DocumentViewer::Selection) {
+            d->selectionBand->setGeometry(QRect(d->selectionOrigin, event->pos()).normalized());
+        }
+    } else {
+        QRect documentRect;
+        documentRect.setSize(this->sizeHint());
+        documentRect.moveCenter(QPoint(this->width() / 2, this->height() / 2));
+
+        //See if there is a click action
+        QVariantMap action = d->page->clickAction((event->pos() - documentRect.topLeft()) / d->zoom);
+//        tDebug("PageViewer") << action.value("type").toString();
+        if (action.value("type").toString() == "link") {
+            this->setCursor(QCursor(Qt::PointingHandCursor));
+        } else {
+            this->setCursor(QCursor(Qt::ArrowCursor));
+        }
     }
 }
 
@@ -194,20 +247,20 @@ void PageViewer::paintEvent(QPaintEvent* event) {
 
     QPainter painter(this);
 
+    bool shouldUpdateImage = false;
+
     QImage* image = d->pageImages.object(this);
+    QRect rect;
+    rect.setSize(this->sizeHint());
+    rect.moveCenter(QPoint(this->width() / 2, this->height() / 2));
 
     if (image) {
-        QRect rect;
-        rect.setSize(image->size());
-        rect.moveCenter(QPoint(this->width() / 2, this->height() / 2));
-        painter.drawImage(rect, *image);
+        if (rect.size() != image->size()) shouldUpdateImage = true;
+        painter.drawImage(rect, image->scaled(rect.size()));
     } else {
-        //TODO: show a white page or something?
-        updatePageImage();
-
-        QRect rect;
-        rect.setSize(this->sizeHint());
-        rect.moveCenter(QPoint(this->width() / 2, this->height() / 2));
+        shouldUpdateImage = true;
         painter.fillRect(rect, Qt::white);
     }
+
+    if (shouldUpdateImage) updatePageImage();
 }

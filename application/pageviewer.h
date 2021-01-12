@@ -42,6 +42,7 @@ class PageViewer : public QWidget {
 
     signals:
         void changeZoom(double zoom, QPoint fixationPoint);
+        void navigate(int page, double offsetTop, double offsetLeft);
 
     private:
         Ui::PageViewer* ui;

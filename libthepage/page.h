@@ -37,6 +37,7 @@ class Page : public QObject {
         virtual QSizeF pageSize() = 0;
         virtual tPromise<QImage>* render(double zoom = 1) = 0;
         virtual QList<SelectionResult> selectionMade(QRect rect) = 0;
+        virtual QVariantMap clickAction(QPointF point) = 0;
 
     signals:
 
