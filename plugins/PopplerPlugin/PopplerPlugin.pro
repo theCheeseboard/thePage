@@ -10,7 +10,7 @@ unix {
     PKGCONFIG += poppler-qt5
 
     translations.files = translations/*.qm
-    translations.path = /usr/share/thefrisbee/popplerplugin/translations
+    translations.path = /usr/share/thepage/popplerplugin/translations
     INSTALLS += translations
 }
 
