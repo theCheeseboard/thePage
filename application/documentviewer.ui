@@ -155,7 +155,7 @@
                </font>
               </property>
               <property name="text">
-               <string notr="true">Locked Document</string>
+               <string>Locked Document</string>
               </property>
               <property name="buddy">
                <cstring></cstring>
@@ -172,7 +172,7 @@
              </font>
             </property>
             <property name="text">
-             <string notr="true">Enter the password to unlock this document</string>
+             <string>Enter the password to unlock this document</string>
             </property>
            </widget>
           </item>
