@@ -4,11 +4,6 @@
 <context>
     <name>DocumentViewer</name>
     <message>
-        <location filename="../documentviewer.ui" line="14"/>
-        <source>Form</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="../documentviewer.ui" line="60"/>
         <source>Open a document</source>
         <translation type="unfinished"></translation>
@@ -89,11 +84,6 @@
 </context>
 <context>
     <name>PageViewer</name>
-    <message>
-        <location filename="../pageviewer.ui" line="16"/>
-        <source>Form</source>
-        <translation type="unfinished"></translation>
-    </message>
     <message>
         <location filename="../pageviewer.cpp" line="147"/>
         <source>For text %1</source>
