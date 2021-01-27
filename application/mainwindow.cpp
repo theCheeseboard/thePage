@@ -58,6 +58,7 @@ MainWindow::MainWindow(QWidget* parent)
     QMenu* menu = new QMenu(this);
     menu->addAction(ui->actionNew_Tab);
     menu->addAction(ui->actionOpen);
+    menu->addAction(ui->actionClose_Tab);
     menu->addSeparator();
     menu->addMenu(new tHelpMenu(this));
     menu->addAction(ui->actionExit);
@@ -93,13 +94,17 @@ DocumentViewer* MainWindow::newTab() {
     DocumentViewer* viewer = new DocumentViewer();
     d->tabButtons.insert(viewer, button);
 
-    connect(viewer, &DocumentViewer::titleChanged, button, &QPushButton::setText);
+    connect(viewer, &DocumentViewer::titleChanged, this, [ = ](QString title) {
+        button->setText(title);
+        if (button->isChecked()) this->setWindowTitle(QStringLiteral("%1 - thePage").arg(title));
+    });
     connect(button, &QPushButton::clicked, this, [ = ] {
         for (QPushButton* button : d->tabButtons.values()) {
             button->setChecked(false);
         }
         button->setChecked(true);
         ui->stackedWidget->setCurrentWidget(viewer);
+        this->setWindowTitle(QStringLiteral("%1 - thePage").arg(button->text()));
     });
     button->setText(viewer->title());
     button->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
@@ -140,4 +145,18 @@ void MainWindow::on_actionOpen_triggered() {
     });
     connect(dialog, &QFileDialog::finished, dialog, &QFileDialog::deleteLater);
     dialog->open();
+}
+
+void MainWindow::on_actionClose_Tab_triggered() {
+    QWidget* w = ui->stackedWidget->currentWidget();
+    if (w) {
+        DocumentViewer* tab = static_cast<DocumentViewer*>(w);
+        QPushButton* button = d->tabButtons.take(tab);
+        ui->stackedWidget->removeWidget(tab);
+        ui->tabButtonLayout->removeWidget(button);
+        button->deleteLater();
+        tab->deleteLater();
+
+        if (ui->stackedWidget->count() == 0) newTab();
+    }
 }

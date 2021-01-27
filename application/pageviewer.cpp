@@ -93,8 +93,11 @@ void PageViewer::setDocumentMode(DocumentViewer::DocumentMode mode) {
 void PageViewer::updatePageImage() {
     if (d->pageLoadRequested) return;
 
+    QPointer<QObject> contextObject(this);
+
     d->pageLoadRequested = true;
     d->page->render(d->zoom)->then([ = ](QImage image) {
+        if (!contextObject) return;
         d->pageImages.insert(this, new QImage(image), image.sizeInBytes());
         d->pageLoadRequested = false;
         this->update();

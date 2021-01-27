@@ -10,6 +10,27 @@ CONFIG += c++11
 # In order to do so, uncomment the following line.
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
+unix:!macx {
+    QT += thelib
+
+    CONFIG += link_pkgconfig
+    PKGCONFIG += taglib
+
+    CI = $$(CI)
+    if (isEmpty(CI)) {
+        target.path = $$[QT_INSTALL_LIBS]
+    } else {
+        target.path = /usr/lib
+    }
+
+    INSTALLS += target
+}
+
+win32 {
+    INCLUDEPATH += "C:/Program Files/thelibs/include"
+    LIBS += -L"C:/Program Files/thelibs/lib" -lthe-libs
+}
+
 SOURCES += \
     document.cpp \
     documentprovider.cpp \
@@ -23,9 +44,3 @@ HEADERS += \
     libthepage_global.h \
     page.h \
     plugininterface.h
-
-# Default rules for deployment.
-unix {
-    target.path = /usr/lib
-}
-!isEmpty(target.path): INSTALLS += target

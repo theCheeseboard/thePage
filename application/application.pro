@@ -1,7 +1,92 @@
 QT       += core gui thelib
 TARGET = thepage
+SHARE_APP_NAME = thepage
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
+
+unix:!macx {
+    # Include the-libs build tools
+    include(/usr/share/the-libs/pri/buildmaster.pri)
+
+    DEFINES += SYSTEM_LIBRARY_DIRECTORY=\\\"$$[QT_INSTALL_LIBS]\\\"
+
+    QT += thelib
+    TARGET = thepage
+
+    CONFIG += link_pkgconfig
+    PKGCONFIG += taglib
+
+    LIBS += -L$$OUT_PWD/../libthepage/ -lthepage
+
+    target.path = /usr/bin
+
+    desktop.path = /usr/share/applications
+    blueprint {
+        desktop.files = com.vicr123.thepage-blueprint.desktop
+    } else {
+        desktop.files = com.vicr123.thepage.desktop
+    }
+
+    icon.path = /usr/share/icons/hicolor/scalable/apps/
+    icon.files = icons/thepage.svg
+
+    defaults.files = defaults.conf
+    defaults.path = /etc/theSuite/thepage/
+
+#    metainfo.files = com.vicr123.thepage.metainfo.xml
+#    metainfo.path = /usr/share/metainfo
+
+    INSTALLS += target desktop icon defaults #metainfo
+}
+
+win32 {
+    # Include the-libs build tools
+    include(C:/Program Files/thelibs/pri/buildmaster.pri)
+
+    QT += winextras
+
+    INCLUDEPATH += "C:/Program Files/thelibs/include" "C:/Program Files/theinstaller/include" "C:/Program Files (x86)/taglib/include"
+    LIBS += -L"C:/Program Files/thelibs/lib" -L"C:/Program Files/theinstaller/lib" -lthe-libs -ltheinstaller -L"C:\Program Files (x86)\taglib\lib" -ltag
+    RC_FILE = icon.rc
+    TARGET = thePage
+
+    DEFINES += HAVE_THEINSTALLER
+
+    SOURCES += \
+        platformintegration/winplatformintegration.cpp
+
+    HEADERS += \
+        platformintegration/winplatformintegration.h
+
+    win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../libthepage/release/ -lthepage
+    else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../libthepage/debug/ -lthepage
+}
+
+macx {
+    # Include the-libs build tools
+    include(/usr/local/share/the-libs/pri/buildmaster.pri)
+
+    # TODO: Link with taglib
+
+    QT += macextras
+    LIBS += -framework CoreFoundation -framework AppKit
+    QMAKE_INFO_PLIST = Info.plist
+
+    LIBS += -L$$OUT_PWD/../libthepage/ -lthepage
+
+    blueprint {
+        TARGET = "thePage Blueprint"
+        ICON = icon-bp.icns
+    } else {
+        TARGET = "thePage"
+        ICON = icon.icns
+    }
+
+    INCLUDEPATH += "/usr/local/include/the-libs"
+    LIBS += -L/usr/local/lib -lthe-libs
+
+    QMAKE_POST_LINK += $$quote(cp $${PWD}/dmgicon.icns $${PWD}/app-dmg-background.png $${PWD}/node-appdmg-config*.json $${OUT_PWD}/..)
+}
 
 CONFIG += c++11
 
@@ -30,15 +115,6 @@ FORMS += \
 unix:!macx {
     DEFINES += SYSTEM_LIBRARY_DIRECTORY=\\\"$$[QT_INSTALL_LIBS]\\\"
 }
-
-# Default rules for deployment.
-qnx: target.path = /tmp/$${TARGET}/bin
-else: unix:!android: target.path = /opt/$${TARGET}/bin
-!isEmpty(target.path): INSTALLS += target
-
-win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../libthepage/release/ -lthepage
-else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../libthepage/debug/ -lthepage
-else:unix: LIBS += -L$$OUT_PWD/../libthepage/ -lthepage
 
 INCLUDEPATH += $$PWD/../libthepage
 DEPENDPATH += $$PWD/../libthepage
