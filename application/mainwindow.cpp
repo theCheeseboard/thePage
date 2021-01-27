@@ -70,8 +70,6 @@ MainWindow::MainWindow(QWidget* parent)
 
     ui->stackedWidget->setCurrentAnimation(tStackedWidget::SlideHorizontal);
 
-    newTab();
-
 //    Document* doc = DocumentProviderManager::instance()->documentFor("/home/victor/print.pdf");
 //    tDebug("MainWindow") << "Document has " << doc->pageCount() << " pages";
 //    ui->label->setPixmap(QPixmap::fromImage(doc->page(0)->render(2)));
@@ -79,6 +77,17 @@ MainWindow::MainWindow(QWidget* parent)
 
 MainWindow::~MainWindow() {
     delete ui;
+}
+
+void MainWindow::newTab(QUrl file) {
+    DocumentViewer* viewer = newTab();
+    viewer->openFile(file);
+}
+
+void MainWindow::show() {
+    //Create a new tab if there is none already there
+    if (ui->stackedWidget->count() == 0) newTab();
+    QMainWindow::show();
 }
 
 void MainWindow::on_actionExit_triggered() {

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.1" sourcelanguage="en_US" language="vi_VN">
+<TS version="2.1" language="vi_VN" sourcelanguage="en_US">
 <context>
     <name>DocumentViewer</name>
     <message>
@@ -133,9 +133,19 @@
 <context>
     <name>main</name>
     <message>
-        <location filename="../main.cpp" line="38"/>
+        <location filename="../main.cpp" line="40"/>
         <source>Document Viewer</source>
         <translation>Bộ xem tài liệu</translation>
+    </message>
+    <message>
+        <location filename="../main.cpp" line="66"/>
+        <source>file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../main.cpp" line="66"/>
+        <source>File to open</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 </TS>

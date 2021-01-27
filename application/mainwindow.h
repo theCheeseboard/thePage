@@ -37,6 +37,10 @@ class MainWindow : public QMainWindow {
         MainWindow(QWidget* parent = nullptr);
         ~MainWindow();
 
+        void newTab(QUrl file);
+
+        void show();
+
     private slots:
         void on_actionExit_triggered();
 

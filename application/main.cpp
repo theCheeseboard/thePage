@@ -21,6 +21,8 @@
 
 #include <tapplication.h>
 #include <tsettings.h>
+#include <QCommandLineParser>
+#include <QJsonArray>
 #include <QDir>
 
 int main(int argc, char* argv[]) {
@@ -57,8 +59,45 @@ int main(int argc, char* argv[]) {
     tSettings::registerDefaults(a.applicationDirPath() + "/defaults.conf");
     tSettings::registerDefaults("/etc/theSuite/thepage/defaults.conf");
 
-    MainWindow w;
-    w.show();
+
+    QCommandLineParser parser;
+    parser.addHelpOption();
+    parser.addVersionOption();
+    parser.addPositionalArgument(a.translate("main", "file"), a.translate("main", "File to open"), QStringLiteral("[%1]").arg(a.translate("main", "file")));
+    parser.process(a);
+
+    MainWindow* w = new MainWindow();
+
+    QObject::connect(&a, &tApplication::singleInstanceMessage, [ = ](QJsonObject launchMessage) {
+        if (launchMessage.contains("files")) {
+            QJsonArray files = launchMessage.value("files").toArray();
+
+            for (const QJsonValue& file : qAsConst(files)) {
+                w->newTab(QUrl(file.toString()));
+            }
+
+            w->show();
+            w->activateWindow();
+        }
+    });
+
+    QStringList files;
+    for (const QString& arg : parser.positionalArguments()) {
+        if (QUrl::fromLocalFile(arg).isValid()) {
+            files.append(QUrl::fromLocalFile(arg).toEncoded());
+        } else {
+            files.append(QUrl(arg).toEncoded());
+        }
+    }
+    a.ensureSingleInstance({
+        {"files", QJsonArray::fromStringList(files)}
+    });
+
+    for (const QString& file : qAsConst(files)) {
+        w->newTab(QUrl(file));
+    }
+
+    w->show();
 
     return a.exec();
 }
