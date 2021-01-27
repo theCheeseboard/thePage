@@ -121,3 +121,8 @@ DEPENDPATH += $$PWD/../libthepage
 
 RESOURCES += \
     resources.qrc
+
+DISTFILES += \
+    com.vicr123.thepage-blueprint.desktop \
+    com.vicr123.thepage.desktop \
+    defaults.conf

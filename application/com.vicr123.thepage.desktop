@@ -1,0 +1,12 @@
+#!/usr/bin/env xdg-open
+[Desktop Entry]
+Type=Application
+Version=1.0
+Name=thePage
+GenericName=Document Viewer
+GenericName[nl]=Documentlezer
+GenericName[vi]=Bộ xem tài liệu
+Categories=Office;Viewer;Graphics;
+Exec=thepage
+Icon=thepage
+MimeType=application/pdf;
