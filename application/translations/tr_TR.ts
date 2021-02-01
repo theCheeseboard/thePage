@@ -16,12 +16,12 @@
     <message>
         <location filename="../documentviewer.ui" line="158"/>
         <source>Locked Document</source>
-        <translation type="unfinished"></translation>
+        <translation>Kilitli Dosya</translation>
     </message>
     <message>
         <location filename="../documentviewer.ui" line="175"/>
         <source>Enter the password to unlock this document</source>
-        <translation type="unfinished"></translation>
+        <translation>Bu belgenin kilidini açmak için şifreyi girin</translation>
     </message>
     <message>
         <location filename="../documentviewer.ui" line="544"/>
