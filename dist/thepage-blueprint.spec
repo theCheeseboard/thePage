@@ -8,13 +8,13 @@ URL:            https://github.com/vicr123/thepage
 Source0:        https://github.com/vicr123/thepage/archive/%{version}.tar.gz
 
 %if 0%{?fedora} == 32
-BuildRequires:  make qt5-devel the-libs-blueprint-devel poppler-qt5-devel
-Requires:       qt5 the-libs-blueprint poppler-qt5
+BuildRequires:  make qt5-devel the-libs-blueprint-devel poppler-qt5-devel libthepage-blueprint
+Requires:       qt5 the-libs-blueprint poppler-qt5 libthepage-blueprint
 %endif
 
 %if 0%{?fedora} >= 33
-BuildRequires:  make qt5-qtbase-devel the-libs-blueprint-devel poppler-qt5-devel
-Requires:       qt5-qtbase the-libs-blueprint poppler-qt5
+BuildRequires:  make qt5-qtbase-devel the-libs-blueprint-devel poppler-qt5-devel libthepage-blueprint
+Requires:       qt5-qtbase the-libs-blueprint poppler-qt5 libthepage-blueprint
 %endif
 
 %define debug_package %{nil}
@@ -22,6 +22,14 @@ Requires:       qt5-qtbase the-libs-blueprint poppler-qt5
 
 %description
 Document viewer using poppler
+
+%package -n libthepage-blueprint
+Summary:        Libraries for %{name} plugins
+Conflicts:      libthepage
+Provides:       libthepage
+
+%description -n libthedesk-blueprint
+Libraries for thePage plugins
 
 %prep
 %setup
@@ -46,6 +54,12 @@ find $RPM_BUILD_ROOT -name '*.la' -exec rm -f {} ';'
 %{_datadir}/applications/com.vicr123.thepage.desktop
 %{_datadir}/icons/hicolor/scalable/apps/thepage.svg
 %{_sysconfdir}/theSuite/thepage/defailts.conf
+%{_datadir}/thepage/translations/*
+%{_datadir}/thepage/popperplugin/translations/*
+%{_libdir}/thepage/plugins/*
+
+%files -n libthedesk-blueprint
+%{_libdir}/libthepage.so*
 
 %changelog
 * Sun May  3 2020 Victor Tran
