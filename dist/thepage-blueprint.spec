@@ -28,7 +28,7 @@ Summary:        Libraries for %{name} plugins
 Conflicts:      libthepage
 Provides:       libthepage
 
-%description -n libthedesk-blueprint
+%description -n libthepage-blueprint
 Libraries for thePage plugins
 
 %prep
