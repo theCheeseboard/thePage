@@ -56,9 +56,9 @@ find $RPM_BUILD_ROOT -name '*.la' -exec rm -f {} ';'
 %{_bindir}/thepage
 %{_datadir}/applications/com.vicr123.thepage.desktop
 %{_datadir}/icons/hicolor/scalable/apps/thepage.svg
-%{_sysconfdir}/theSuite/thepage/defailts.conf
+%{_sysconfdir}/theSuite/thepage/defaults.conf
 %{_datadir}/thepage/translations/*
-%{_datadir}/thepage/popperplugin/translations/*
+%{_datadir}/thepage/popplerplugin/translations/*
 %{_libdir}/thepage/plugins/*
 
 %files -n libthepage-blueprint
