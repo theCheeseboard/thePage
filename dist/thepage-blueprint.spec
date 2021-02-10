@@ -13,7 +13,7 @@ Requires:       qt5 the-libs-blueprint poppler-qt5 libthepage-blueprint
 %endif
 
 %if 0%{?fedora} >= 33
-BuildRequires:  make qt5-qtbase-devel the-libs-blueprint-devel poppler-qt5-devel
+BuildRequires:  make qt5-qtbase-devel the-libs-blueprint-devel poppler-qt5-devel qt5-linguist
 Requires:       qt5-qtbase the-libs-blueprint poppler-qt5 libthepage-blueprint
 %endif
 
@@ -35,10 +35,13 @@ Libraries for thePage plugins
 %setup
 
 %build
+mkdir build
+cd build
 qmake-qt5
 make
 
 %install
+cd build
 rm -rf $RPM_BUILD_ROOT
 #%make_install
 make install INSTALL_ROOT=$RPM_BUILD_ROOT
