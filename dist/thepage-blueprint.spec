@@ -8,12 +8,12 @@ URL:            https://github.com/vicr123/thepage
 Source0:        https://github.com/vicr123/thepage/archive/%{version}.tar.gz
 
 %if 0%{?fedora} == 32
-BuildRequires:  make qt5-devel the-libs-blueprint-devel poppler-qt5-devel libthepage-blueprint
+BuildRequires:  make qt5-devel the-libs-blueprint-devel poppler-qt5-devel
 Requires:       qt5 the-libs-blueprint poppler-qt5 libthepage-blueprint
 %endif
 
 %if 0%{?fedora} >= 33
-BuildRequires:  make qt5-qtbase-devel the-libs-blueprint-devel poppler-qt5-devel libthepage-blueprint
+BuildRequires:  make qt5-qtbase-devel the-libs-blueprint-devel poppler-qt5-devel
 Requires:       qt5-qtbase the-libs-blueprint poppler-qt5 libthepage-blueprint
 %endif
 
