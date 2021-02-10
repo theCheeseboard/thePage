@@ -1,11 +1,11 @@
-Name:           thedesk-blueprint
+Name:           thepage-blueprint
 Version:        1.0
 Release:        1%{?dist}
 Summary:        Document Viewer
 
 License:        GPLv3+
-URL:            https://github.com/vicr123/thedesk
-Source0:        https://github.com/vicr123/thedesk/archive/%{version}.tar.gz
+URL:            https://github.com/vicr123/thepage
+Source0:        https://github.com/vicr123/thepage/archive/%{version}.tar.gz
 
 %if 0%{?fedora} == 32
 BuildRequires:  make qt5-devel the-libs-blueprint-devel poppler-qt5-devel
