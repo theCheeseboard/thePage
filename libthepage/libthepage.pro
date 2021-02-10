@@ -13,9 +13,6 @@ CONFIG += c++11
 unix:!macx {
     QT += thelib
 
-    CONFIG += link_pkgconfig
-    PKGCONFIG += taglib
-
     CI = $$(CI)
     if (isEmpty(CI)) {
         target.path = $$[QT_INSTALL_LIBS]

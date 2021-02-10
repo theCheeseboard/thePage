@@ -13,9 +13,6 @@ unix:!macx {
     QT += thelib
     TARGET = thepage
 
-    CONFIG += link_pkgconfig
-    PKGCONFIG += taglib
-
     LIBS += -L$$OUT_PWD/../libthepage/ -lthepage
 
     target.path = /usr/bin
@@ -45,18 +42,12 @@ win32 {
 
     QT += winextras
 
-    INCLUDEPATH += "C:/Program Files/thelibs/include" "C:/Program Files/theinstaller/include" "C:/Program Files (x86)/taglib/include"
-    LIBS += -L"C:/Program Files/thelibs/lib" -L"C:/Program Files/theinstaller/lib" -lthe-libs -ltheinstaller -L"C:\Program Files (x86)\taglib\lib" -ltag
+    INCLUDEPATH += "C:/Program Files/thelibs/include" "C:/Program Files/theinstaller/include"
+    LIBS += -L"C:/Program Files/thelibs/lib" -L"C:/Program Files/theinstaller/lib" -lthe-libs -ltheinstaller
     RC_FILE = icon.rc
     TARGET = thePage
 
     DEFINES += HAVE_THEINSTALLER
-
-    SOURCES += \
-        platformintegration/winplatformintegration.cpp
-
-    HEADERS += \
-        platformintegration/winplatformintegration.h
 
     win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../libthepage/release/ -lthepage
     else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../libthepage/debug/ -lthepage
@@ -65,8 +56,6 @@ win32 {
 macx {
     # Include the-libs build tools
     include(/usr/local/share/the-libs/pri/buildmaster.pri)
-
-    # TODO: Link with taglib
 
     QT += macextras
     LIBS += -framework CoreFoundation -framework AppKit
