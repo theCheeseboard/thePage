@@ -37,7 +37,7 @@ Libraries for thePage plugins
 %build
 mkdir build
 cd build
-qmake-qt5
+qmake-qt5 ../thePage.pro
 make
 
 %install
