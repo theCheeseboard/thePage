@@ -58,7 +58,7 @@ find $RPM_BUILD_ROOT -name '*.la' -exec rm -f {} ';'
 %{_datadir}/thepage/popperplugin/translations/*
 %{_libdir}/thepage/plugins/*
 
-%files -n libthedesk-blueprint
+%files -n libthepage-blueprint
 %{_libdir}/libthepage.so*
 
 %changelog
