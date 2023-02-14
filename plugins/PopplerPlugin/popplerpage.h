@@ -21,13 +21,13 @@
 #define POPPLERPAGE_H
 
 #include <page.h>
-#include <poppler-qt5.h>
+#include <poppler-qt6.h>
 
 struct PopplerPagePrivate;
 class PopplerPage : public Page {
         Q_OBJECT
     public:
-        explicit PopplerPage(Poppler::Page* page);
+        explicit PopplerPage(std::unique_ptr<Poppler::Page> page);
         ~PopplerPage();
 
     signals:

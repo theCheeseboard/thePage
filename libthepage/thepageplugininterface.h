@@ -17,34 +17,12 @@
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * *************************************/
-#ifndef POPPLERDOCUMENT_H
-#define POPPLERDOCUMENT_H
+#ifndef THEFILEPLUGININTERFACE_H
+#define THEFILEPLUGININTERFACE_H
 
-#include <document.h>
-#include <poppler-qt6.h>
+#include <plugins/plugininterface.h>
 
-struct PopplerDocumentPrivate;
-class PopplerDocument : public Document {
-        Q_OBJECT
-    public:
-        explicit PopplerDocument(std::unique_ptr<Poppler::Document> document, QUrl filename);
-        ~PopplerDocument();
+#define PluginInterface_iid "com.vicr123.thepage.PluginInterface/1.0"
+Q_DECLARE_INTERFACE(PluginInterface, PluginInterface_iid);
 
-    signals:
-
-    private:
-        PopplerDocumentPrivate* d;
-
-        // Document interface
-    public:
-        QUrl fileName();
-        Page* page(int pageNumber);
-        int pageCount();
-        QString title();
-        bool requiresPassword();
-        bool providePassword(QString password);
-        bool save(QIODevice* device);
-        bool isDrmEnforced(DRMLimitation limitation);
-};
-
-#endif // POPPLERDOCUMENT_H
+#endif // THEFILEPLUGININTERFACE_H

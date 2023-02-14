@@ -22,22 +22,19 @@
 #include <QImage>
 
 struct PopplerPagePrivate {
-    uint renders = 0;
-    Poppler::Page* page;
+        uint renders = 0;
+        std::unique_ptr<Poppler::Page> page;
 };
 
-PopplerPage::PopplerPage(Poppler::Page* page) : Page() {
+PopplerPage::PopplerPage(std::unique_ptr<Poppler::Page> page) :
+    Page() {
     d = new PopplerPagePrivate();
-    d->page = page;
-
-
+    d->page = std::move(page);
 }
 
 PopplerPage::~PopplerPage() {
-    delete d->page;
     delete d;
 }
-
 
 QSizeF PopplerPage::pageSize() {
     return d->page->pageSizeF();
@@ -52,21 +49,21 @@ tPromise<QImage>* PopplerPage::render(double zoom) {
             return;
         }
 
-        //Render at more DPI then we need and then scale down to improve picture quality
-        QImage image = d->page->renderToImage(144.0 * zoom, 144.0 * zoom, -1, -1, -1, -1, Poppler::Page::Rotate0, [](const QImage&, const QVariant&) {
-
-        }, [](const QVariant&) -> bool {
-            return false;
-        }, [](const QVariant & metaVariant) -> bool {
-            QVariantMap meta = metaVariant.toMap();
-            if (meta.value("currentRender").toUInt() != meta.value("this").value<PopplerPage*>()->d->renders) {
-                return true;
-            }
-            return false;
-        }, QVariant::fromValue(QVariantMap({
-            {"this", QVariant::fromValue(this)},
-            {"currentRender", currentRender}
-        })));
+        // Render at more DPI then we need and then scale down to improve picture quality
+        QImage image = d->page->renderToImage(
+            144.0 * zoom, 144.0 * zoom, -1, -1, -1, -1, Poppler::Page::Rotate0, [](const QImage&, const QVariant&) {
+        },
+            [](const QVariant&) -> bool {
+                return false;
+            },
+            [](const QVariant& metaVariant) -> bool {
+                QVariantMap meta = metaVariant.toMap();
+                if (meta.value("currentRender").toUInt() != meta.value("this").value<PopplerPage*>()->d->renders) {
+                    return true;
+                }
+                return false;
+            },
+            QVariant::fromValue(QVariantMap({{"this", QVariant::fromValue(this)}, {"currentRender", currentRender}})));
 
         if (d->renders != currentRender) {
             rej("Started another render");
@@ -90,38 +87,42 @@ QList<PopplerPage::SelectionResult> PopplerPage::selectionMade(QRect rect) {
 }
 
 QVariantMap PopplerPage::clickAction(QPointF point) {
-    for (Poppler::Link* link : d->page->links()) {
+    auto links = d->page->links();
+    for (auto i = links.begin(); i != links.end(); i++) {
+        auto link = i->get();
         QRectF area(link->linkArea().left() * d->page->pageSizeF().width(), link->linkArea().top() * d->page->pageSizeF().height(), link->linkArea().width() * d->page->pageSizeF().width(), link->linkArea().height() * d->page->pageSizeF().height());
 
         if (area.contains(point)) {
             switch (link->linkType()) {
                 case Poppler::Link::None:
                     break;
-                case Poppler::Link::Goto: {
-                    Poppler::LinkGoto* glink = static_cast<Poppler::LinkGoto*>(link);
-                    Poppler::LinkDestination dest = glink->destination();
+                case Poppler::Link::Goto:
+                    {
+                        Poppler::LinkGoto* glink = static_cast<Poppler::LinkGoto*>(link);
+                        Poppler::LinkDestination dest = glink->destination();
 
-                    QVariantMap linkData;
-                    linkData.insert("type", "link");
-                    linkData.insert("linkType", "viewport");
-                    linkData.insert("page", dest.pageNumber() - 1);
-                    if (dest.isChangeTop()) linkData.insert("offsetTop", dest.top());
-                    if (dest.isChangeLeft()) linkData.insert("offsetLeft", dest.left());
+                        QVariantMap linkData;
+                        linkData.insert("type", "link");
+                        linkData.insert("linkType", "viewport");
+                        linkData.insert("page", dest.pageNumber() - 1);
+                        if (dest.isChangeTop()) linkData.insert("offsetTop", dest.top());
+                        if (dest.isChangeLeft()) linkData.insert("offsetLeft", dest.left());
 
-                    return linkData;
-                }
+                        return linkData;
+                    }
                 case Poppler::Link::Execute:
                     break;
-                case Poppler::Link::Browse: {
-                    Poppler::LinkBrowse* blink = static_cast<Poppler::LinkBrowse*>(link);
+                case Poppler::Link::Browse:
+                    {
+                        Poppler::LinkBrowse* blink = static_cast<Poppler::LinkBrowse*>(link);
 
-                    return {
-                        {"type", "link"},
-                        {"linkType", "url"},
-                        {"url", QUrl(blink->url())}
-                    };
-                    break;
-                }
+                        return {
+                            {"type",     "link"            },
+                            {"linkType", "url"             },
+                            {"url",      QUrl(blink->url())}
+                        };
+                        break;
+                    }
                 case Poppler::Link::Action:
                     break;
                 case Poppler::Link::Sound:
@@ -136,7 +137,6 @@ QVariantMap PopplerPage::clickAction(QPointF point) {
                     break;
                 case Poppler::Link::Hide:
                     break;
-
             }
 
             return {

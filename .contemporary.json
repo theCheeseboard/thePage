@@ -1,0 +1,8 @@
+{
+    "dmg": {
+        "icon": "dist/dmgicon.icns",
+        "background": "dist/app-dmg-background.png"
+    },
+    "desktop-id": "com.vicr123.thepage",
+    "theme-colors": ["#323264", "#3232c8"]
+}

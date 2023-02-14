@@ -20,27 +20,24 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
+#include <QFileDialog>
+#include <QPushButton>
 #include <tapplication.h>
+#include <tcsdtools.h>
 #include <thelpmenu.h>
 #include <tjobmanager.h>
-#include <tcsdtools.h>
-#include "pluginmanager.h"
 #include <tlogger.h>
-#include <QPushButton>
-#include <QFileDialog>
 
 #include "documentviewer.h"
 
 struct MainWindowPrivate {
-    tCsdTools csd;
-    PluginManager plugins;
+        tCsdTools csd;
 
-    QMap<DocumentViewer*, QPushButton*> tabButtons;
+        QMap<DocumentViewer*, QPushButton*> tabButtons;
 };
 
-MainWindow::MainWindow(QWidget* parent)
-    : QMainWindow(parent)
-    , ui(new Ui::MainWindow) {
+MainWindow::MainWindow(QWidget* parent) :
+    QMainWindow(parent), ui(new Ui::MainWindow) {
     ui->setupUi(this);
 
     ui->jobButtonLayout->addWidget(tJobManager::makeJobButton());
@@ -63,16 +60,15 @@ MainWindow::MainWindow(QWidget* parent)
     menu->addMenu(new tHelpMenu(this));
     menu->addAction(ui->actionExit);
 
+    ui->menuButton->setIcon(tApplication::applicationIcon());
     ui->menuButton->setIconSize(SC_DPI_T(QSize(24, 24), QSize));
     ui->menuButton->setMenu(menu);
 
-    d->plugins.load();
-
     ui->stackedWidget->setCurrentAnimation(tStackedWidget::SlideHorizontal);
 
-//    Document* doc = DocumentProviderManager::instance()->documentFor("/home/victor/print.pdf");
-//    tDebug("MainWindow") << "Document has " << doc->pageCount() << " pages";
-//    ui->label->setPixmap(QPixmap::fromImage(doc->page(0)->render(2)));
+    //    Document* doc = DocumentProviderManager::instance()->documentFor("/home/victor/print.pdf");
+    //    tDebug("MainWindow") << "Document has " << doc->pageCount() << " pages";
+    //    ui->label->setPixmap(QPixmap::fromImage(doc->page(0)->render(2)));
 }
 
 MainWindow::~MainWindow() {
@@ -85,7 +81,7 @@ void MainWindow::newTab(QUrl file) {
 }
 
 void MainWindow::show() {
-    //Create a new tab if there is none already there
+    // Create a new tab if there is none already there
     if (ui->stackedWidget->count() == 0) newTab();
     QMainWindow::show();
 }
@@ -103,11 +99,11 @@ DocumentViewer* MainWindow::newTab() {
     DocumentViewer* viewer = new DocumentViewer();
     d->tabButtons.insert(viewer, button);
 
-    connect(viewer, &DocumentViewer::titleChanged, this, [ = ](QString title) {
+    connect(viewer, &DocumentViewer::titleChanged, this, [=](QString title) {
         button->setText(title);
         if (button->isChecked()) this->setWindowTitle(QStringLiteral("%1 - thePage").arg(title));
     });
-    connect(button, &QPushButton::clicked, this, [ = ] {
+    connect(button, &QPushButton::clicked, this, [=] {
         for (QPushButton* button : d->tabButtons.values()) {
             button->setChecked(false);
         }
@@ -143,12 +139,12 @@ void MainWindow::on_actionOpen_triggered() {
         }
     }
 
-    //Open a document in a new tab
+    // Open a document in a new tab
     QFileDialog* dialog = new QFileDialog(this);
     dialog->setAcceptMode(QFileDialog::AcceptOpen);
     dialog->setNameFilters({"PDF Documents (*.pdf)"});
     dialog->setFileMode(QFileDialog::AnyFile);
-    connect(dialog, &QFileDialog::fileSelected, this, [ = ](QString file) {
+    connect(dialog, &QFileDialog::fileSelected, this, [=](QString file) {
         DocumentViewer* tab = newTab();
         tab->openFile(QUrl::fromLocalFile(file));
     });

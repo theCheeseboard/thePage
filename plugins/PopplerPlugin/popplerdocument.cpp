@@ -22,15 +22,16 @@
 #include "popplerpage.h"
 
 struct PopplerDocumentPrivate {
-    Poppler::Document* document;
-    QUrl fileName;
+        std::unique_ptr<Poppler::Document> document;
+        QUrl fileName;
 
-    QHash<int, PopplerPage*> pages;
+        QHash<int, PopplerPage*> pages;
 };
 
-PopplerDocument::PopplerDocument(Poppler::Document* document, QUrl filename) : Document() {
+PopplerDocument::PopplerDocument(std::unique_ptr<Poppler::Document> document, QUrl filename) :
+    Document() {
     d = new PopplerDocumentPrivate();
-    d->document = document;
+    d->document = std::move(document);
     d->fileName = filename;
 }
 
@@ -39,7 +40,6 @@ PopplerDocument::~PopplerDocument() {
         delete page;
     }
 
-    delete d->document;
     delete d;
 }
 
@@ -50,7 +50,7 @@ QUrl PopplerDocument::fileName() {
 Page* PopplerDocument::page(int pageNumber) {
     PopplerPage* page = d->pages.value(pageNumber, nullptr);
     if (page == nullptr) {
-        page = new PopplerPage(d->document->page(pageNumber));
+        page = new PopplerPage(std::move(d->document->page(pageNumber)));
         if (page == nullptr) return nullptr;
         d->pages.insert(pageNumber, page);
     }
@@ -66,7 +66,7 @@ QString PopplerDocument::title() {
     QString title = d->document->title();
     if (title.isEmpty()) {
         title = d->fileName.fileName();
-//        title = tr("PDF Document");
+        //        title = tr("PDF Document");
     }
     return title;
 }
@@ -80,10 +80,9 @@ bool PopplerDocument::providePassword(QString password) {
 }
 
 bool PopplerDocument::save(QIODevice* device) {
-    Poppler::PDFConverter* converter = d->document->pdfConverter();
+    auto converter = d->document->pdfConverter();
     converter->setOutputDevice(device);
     bool success = converter->convert();
-    delete converter;
     return success;
 }
 

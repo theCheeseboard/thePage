@@ -1,0 +1,29 @@
+{
+    "name": "thePage",
+    "subprojects": [
+        {
+            "name": "libthepage",
+            "type": "qt",
+            "path": "/libthepage/translations/{lang}.ts",
+            "baseLang": "en_US"
+        },
+        {
+            "name": "thePage Desktop",
+            "type": "qt",
+            "path": "/application/translations/{lang}.ts",
+            "baseLang": "en_US"
+        },
+        {
+            "name": "thePage Desktop File",
+            "type": "webext-json",
+            "path": "/application/translations/desktop/com.vicr123.thepage/{lang}.json",
+            "baseLang": "en"
+        },
+        {
+            "name": "thePage Blueprint Desktop File",
+            "type": "webext-json",
+            "path": "/application/translations/desktop/com.vicr123.thepage_blueprint/{lang}.json",
+            "baseLang": "en"
+        }
+    ]
+}

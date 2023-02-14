@@ -19,46 +19,39 @@
  * *************************************/
 #include "mainwindow.h"
 
-#include <tapplication.h>
-#include <tsettings.h>
 #include <QCommandLineParser>
-#include <QJsonArray>
 #include <QDir>
+#include <QJsonArray>
+#include <plugins/tpluginmanager.h>
+#include <tapplication.h>
+#include <thepageplugininterface.h>
+#include <tsettings.h>
 
 int main(int argc, char* argv[]) {
     tApplication a(argc, argv);
-
-    if (QDir("/usr/share/thepage/").exists()) {
-        a.setShareDir("/usr/share/thepage/");
-    } else if (QDir(QDir::cleanPath(QApplication::applicationDirPath() + "/../share/thepage/")).exists()) {
-        a.setShareDir(QDir::cleanPath(QApplication::applicationDirPath() + "/../share/thepage/"));
-    }
+    a.setApplicationShareDir("thepage");
     a.installTranslators();
 
-    a.setApplicationIcon(QIcon::fromTheme("thepage", QIcon(":/icons/thepage.svg")));
-    a.setApplicationVersion("1.0");
+    a.setApplicationVersion("2.0");
     a.setGenericName(QApplication::translate("main", "Document Viewer"));
     a.setAboutDialogSplashGraphic(a.aboutDialogSplashGraphicFromSvg(":/icons/aboutsplash.svg"));
     a.setApplicationLicense(tApplication::Gpl3OrLater);
     a.setCopyrightHolder("Victor Tran");
-    a.setCopyrightYear("2021");
+    a.setCopyrightYear("2023");
     a.setOrganizationName("theSuite");
-//    a.setApplicationUrl(tApplication::HelpContents, QUrl("https://help.vicr123.com/docs/thefrisbee/intro"));
+    //    a.setApplicationUrl(tApplication::HelpContents, QUrl("https://help.vicr123.com/docs/thefrisbee/intro"));
     a.setApplicationUrl(tApplication::Sources, QUrl("http://github.com/vicr123/thepage"));
     a.setApplicationUrl(tApplication::FileBug, QUrl("http://github.com/vicr123/thepage/issues"));
-#ifdef T_BLUEPRINT_BUILD
-    a.setApplicationName("thePage Blueprint");
-    a.setDesktopFileName("com.vicr123.thepage-blueprint");
-#else
-    a.setApplicationName("thePage");
-    a.setDesktopFileName("com.vicr123.thepage");
-#endif
+    a.setApplicationName(T_APPMETA_READABLE_NAME);
+    a.setDesktopFileName(T_APPMETA_DESKTOP_ID);
 
     a.registerCrashTrap();
 
     tSettings::registerDefaults(a.applicationDirPath() + "/defaults.conf");
     tSettings::registerDefaults("/etc/theSuite/thepage/defaults.conf");
 
+    auto pluginManager = tPluginManager<PluginInterface>::instance();
+    pluginManager->setLibraryDirectory("thefile");
 
     QCommandLineParser parser;
     parser.addHelpOption();
@@ -68,7 +61,7 @@ int main(int argc, char* argv[]) {
 
     MainWindow* w = new MainWindow();
 
-    QObject::connect(&a, &tApplication::singleInstanceMessage, [ = ](QJsonObject launchMessage) {
+    QObject::connect(&a, &tApplication::singleInstanceMessage, [=](QJsonObject launchMessage) {
         if (launchMessage.contains("files")) {
             QJsonArray files = launchMessage.value("files").toArray();
 

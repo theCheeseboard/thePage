@@ -20,17 +20,16 @@
 #include "popplerdocumentprovider.h"
 
 #include "popplerdocument.h"
-#include <poppler-qt5.h>
 #include <QUrl>
+#include <poppler-qt6.h>
 
-PopplerDocumentProvider::PopplerDocumentProvider() : DocumentProvider() {
-
+PopplerDocumentProvider::PopplerDocumentProvider() :
+    DocumentProvider() {
 }
 
-
 Document* PopplerDocumentProvider::documentFor(QUrl filename) {
-    Poppler::Document* document = Poppler::Document::load(filename.toLocalFile());
+    auto document = Poppler::Document::load(filename.toLocalFile());
     if (!document) return nullptr;
 
-    return new PopplerDocument(document, filename);
+    return new PopplerDocument(std::move(document), filename);
 }

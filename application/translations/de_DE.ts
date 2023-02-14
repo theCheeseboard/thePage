@@ -5,31 +5,37 @@
     <name>DocumentViewer</name>
     <message>
         <location filename="../documentviewer.ui" line="60"/>
+        <location filename="../../../build-thepage-Chroot_6-Debug/application/thepage_autogen/include/ui_documentviewer.h" line="426"/>
         <source>Open a document</source>
         <translation>Dokument öffnen</translation>
     </message>
     <message>
         <location filename="../documentviewer.ui" line="70"/>
+        <location filename="../../../build-thepage-Chroot_6-Debug/application/thepage_autogen/include/ui_documentviewer.h" line="427"/>
         <source>Open</source>
         <translation>Öffnen</translation>
     </message>
     <message>
         <location filename="../documentviewer.ui" line="158"/>
+        <location filename="../../../build-thepage-Chroot_6-Debug/application/thepage_autogen/include/ui_documentviewer.h" line="428"/>
         <source>Locked Document</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../documentviewer.ui" line="175"/>
+        <location filename="../../../build-thepage-Chroot_6-Debug/application/thepage_autogen/include/ui_documentviewer.h" line="429"/>
         <source>Enter the password to unlock this document</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../documentviewer.ui" line="544"/>
+        <location filename="../../../build-thepage-Chroot_6-Debug/application/thepage_autogen/include/ui_documentviewer.h" line="431"/>
         <source>Scrolling</source>
         <translation>Scrollen</translation>
     </message>
     <message>
         <location filename="../documentviewer.ui" line="569"/>
+        <location filename="../../../build-thepage-Chroot_6-Debug/application/thepage_autogen/include/ui_documentviewer.h" line="432"/>
         <source>Selection</source>
         <translation>Auswahl</translation>
     </message>
@@ -53,41 +59,49 @@
     <name>MainWindow</name>
     <message>
         <location filename="../mainwindow.ui" line="132"/>
+        <location filename="../../../build-thepage-Chroot_6-Debug/application/thepage_autogen/include/ui_mainwindow.h" line="163"/>
         <source>Exit</source>
         <translation>Verlassen</translation>
     </message>
     <message>
         <location filename="../mainwindow.ui" line="135"/>
+        <location filename="../../../build-thepage-Chroot_6-Debug/application/thepage_autogen/include/ui_mainwindow.h" line="165"/>
         <source>Ctrl+Q</source>
         <translation>Strg+Q</translation>
     </message>
     <message>
         <location filename="../mainwindow.ui" line="144"/>
+        <location filename="../../../build-thepage-Chroot_6-Debug/application/thepage_autogen/include/ui_mainwindow.h" line="167"/>
         <source>New Tab</source>
         <translation>Neuer Tab</translation>
     </message>
     <message>
         <location filename="../mainwindow.ui" line="147"/>
+        <location filename="../../../build-thepage-Chroot_6-Debug/application/thepage_autogen/include/ui_mainwindow.h" line="169"/>
         <source>Ctrl+T</source>
         <translation>Strg+T</translation>
     </message>
     <message>
         <location filename="../mainwindow.ui" line="156"/>
+        <location filename="../../../build-thepage-Chroot_6-Debug/application/thepage_autogen/include/ui_mainwindow.h" line="171"/>
         <source>Open</source>
         <translation>Öffnen</translation>
     </message>
     <message>
         <location filename="../mainwindow.ui" line="159"/>
+        <location filename="../../../build-thepage-Chroot_6-Debug/application/thepage_autogen/include/ui_mainwindow.h" line="173"/>
         <source>Ctrl+O</source>
         <translation>Strg+O</translation>
     </message>
     <message>
         <location filename="../mainwindow.ui" line="167"/>
+        <location filename="../../../build-thepage-Chroot_6-Debug/application/thepage_autogen/include/ui_mainwindow.h" line="175"/>
         <source>Close Tab</source>
         <translation>Tab schließen</translation>
     </message>
     <message>
         <location filename="../mainwindow.ui" line="170"/>
+        <location filename="../../../build-thepage-Chroot_6-Debug/application/thepage_autogen/include/ui_mainwindow.h" line="177"/>
         <source>Ctrl+W</source>
         <translation>Strg+W</translation>
     </message>
@@ -143,17 +157,17 @@
 <context>
     <name>main</name>
     <message>
-        <location filename="../main.cpp" line="40"/>
+        <location filename="../main.cpp" line="36"/>
         <source>Document Viewer</source>
         <translation>Dokumenten Viewer</translation>
     </message>
     <message>
-        <location filename="../main.cpp" line="66"/>
+        <location filename="../main.cpp" line="59"/>
         <source>file</source>
         <translation>Datei</translation>
     </message>
     <message>
-        <location filename="../main.cpp" line="66"/>
+        <location filename="../main.cpp" line="59"/>
         <source>File to open</source>
         <translation>Datei zum öffnen</translation>
     </message>
