@@ -59,21 +59,25 @@
     <name>LandingPage</name>
     <message>
         <location filename="../landingpage.ui" line="14"/>
+        <location filename="../../../build-thepage-Chroot_6-Debug/application/thepage_autogen/include/ui_landingpage.h" line="134"/>
         <source>Form</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../landingpage.ui" line="125"/>
+        <location filename="../../../build-thepage-Chroot_6-Debug/application/thepage_autogen/include/ui_landingpage.h" line="135"/>
         <source>Get Started</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../landingpage.ui" line="149"/>
+        <location filename="../../../build-thepage-Chroot_6-Debug/application/thepage_autogen/include/ui_landingpage.h" line="136"/>
         <source>Open File</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../landingpage.ui" line="152"/>
+        <location filename="../../../build-thepage-Chroot_6-Debug/application/thepage_autogen/include/ui_landingpage.h" line="137"/>
         <source>Open a file for viewing</source>
         <translation type="unfinished"></translation>
     </message>
