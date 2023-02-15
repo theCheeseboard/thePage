@@ -30,6 +30,6 @@
             "type": "qt",
             "path": "/plugins/PopplerPlugin/translations/{lang}.ts",
             "baseLang": "en_US"
-        },
+        }
     ]
 }
