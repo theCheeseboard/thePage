@@ -44,8 +44,6 @@ class MainWindow : public QMainWindow {
     private slots:
         void on_actionExit_triggered();
 
-        void on_actionNew_Tab_triggered();
-
         void on_stackedWidget_currentChanged(int arg1);
 
         void on_actionOpen_triggered();

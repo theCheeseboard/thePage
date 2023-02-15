@@ -6,14 +6,11 @@ find_package(Qt6 REQUIRED COMPONENTS Widgets DBus Sql PrintSupport)
 find_package(libcontemporary REQUIRED)
 
 set(SOURCES
-    documentviewer.cpp
+    documentviewer.cpp documentviewer.ui
     main.cpp
-    mainwindow.cpp
-    pageviewer.cpp
-
-    documentviewer.ui
-    mainwindow.ui
-    pageviewer.ui
+    mainwindow.cpp mainwindow.ui
+    pageviewer.cpp pageviewer.ui
+    landingpage.cpp landingpage.ui
 
     resources.qrc
 )
@@ -22,6 +19,7 @@ set(HEADERS
     documentviewer.h
     mainwindow.h
     pageviewer.h
+    landingpage.h
 )
 
 # Find Apple lproj files

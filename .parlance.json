@@ -24,6 +24,12 @@
             "type": "webext-json",
             "path": "/application/translations/desktop/com.vicr123.thepage_blueprint/{lang}.json",
             "baseLang": "en"
-        }
+        },
+        {
+            "name": "thePage Poppler Plugin",
+            "type": "qt",
+            "path": "/plugins/PopplerPlugin/translations/{lang}.ts",
+            "baseLang": "en_US"
+        },
     ]
 }

@@ -86,24 +86,14 @@
         </widget>
        </item>
        <item>
-        <layout class="QHBoxLayout" name="tabButtonLayout">
-         <property name="spacing">
-          <number>0</number>
+        <widget class="tWindowTabber" name="windowTabber" native="true">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
          </property>
-        </layout>
-       </item>
-       <item>
-        <spacer name="horizontalSpacer">
-         <property name="orientation">
-          <enum>Qt::Horizontal</enum>
-         </property>
-         <property name="sizeHint" stdset="0">
-          <size>
-           <width>40</width>
-           <height>20</height>
-          </size>
-         </property>
-        </spacer>
+        </widget>
        </item>
        <item>
         <layout class="QHBoxLayout" name="jobButtonLayout"/>
@@ -135,18 +125,6 @@
     <string>Ctrl+Q</string>
    </property>
   </action>
-  <action name="actionNew_Tab">
-   <property name="icon">
-    <iconset theme="tab-new">
-     <normaloff>.</normaloff>.</iconset>
-   </property>
-   <property name="text">
-    <string>New Tab</string>
-   </property>
-   <property name="shortcut">
-    <string>Ctrl+T</string>
-   </property>
-  </action>
   <action name="actionOpen">
    <property name="icon">
     <iconset theme="document-open">
@@ -161,7 +139,8 @@
   </action>
   <action name="actionClose_Tab">
    <property name="icon">
-    <iconset theme="tab-close"/>
+    <iconset theme="tab-close">
+     <normaloff>.</normaloff>.</iconset>
    </property>
    <property name="text">
     <string>Close Tab</string>
@@ -180,6 +159,12 @@
    <slots>
     <signal>switchingFrame(int)</signal>
    </slots>
+  </customwidget>
+  <customwidget>
+   <class>tWindowTabber</class>
+   <extends>QWidget</extends>
+   <header location="global">twindowtabber.h</header>
+   <container>1</container>
   </customwidget>
  </customwidgets>
  <resources>

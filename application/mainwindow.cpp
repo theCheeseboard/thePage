@@ -27,13 +27,15 @@
 #include <thelpmenu.h>
 #include <tjobmanager.h>
 #include <tlogger.h>
+#include <twindowtabberbutton.h>
 
 #include "documentviewer.h"
+#include "landingpage.h"
 
 struct MainWindowPrivate {
         tCsdTools csd;
 
-        QMap<DocumentViewer*, QPushButton*> tabButtons;
+        QMap<DocumentViewer*, tWindowTabberButton*> tabButtons;
 };
 
 MainWindow::MainWindow(QWidget* parent) :
@@ -53,18 +55,22 @@ MainWindow::MainWindow(QWidget* parent) :
     }
 
     QMenu* menu = new QMenu(this);
-    menu->addAction(ui->actionNew_Tab);
     menu->addAction(ui->actionOpen);
     menu->addAction(ui->actionClose_Tab);
     menu->addSeparator();
     menu->addMenu(new tHelpMenu(this));
     menu->addAction(ui->actionExit);
 
+    this->setWindowIcon(tApplication::applicationIcon());
     ui->menuButton->setIcon(tApplication::applicationIcon());
-    ui->menuButton->setIconSize(SC_DPI_T(QSize(24, 24), QSize));
+    ui->menuButton->setIconSize(QSize(24, 24));
     ui->menuButton->setMenu(menu);
 
     ui->stackedWidget->setCurrentAnimation(tStackedWidget::SlideHorizontal);
+
+    auto landingPage = new LandingPage();
+    ui->stackedWidget->setDefaultWidget(landingPage);
+    connect(landingPage, &LandingPage::openFile, this, &MainWindow::on_actionOpen_triggered);
 
     //    Document* doc = DocumentProviderManager::instance()->documentFor("/home/victor/print.pdf");
     //    tDebug("MainWindow") << "Document has " << doc->pageCount() << " pages";
@@ -81,8 +87,6 @@ void MainWindow::newTab(QUrl file) {
 }
 
 void MainWindow::show() {
-    // Create a new tab if there is none already there
-    if (ui->stackedWidget->count() == 0) newTab();
     QMainWindow::show();
 }
 
@@ -90,34 +94,21 @@ void MainWindow::on_actionExit_triggered() {
     tApplication::exit();
 }
 
-void MainWindow::on_actionNew_Tab_triggered() {
-    newTab();
-}
-
 DocumentViewer* MainWindow::newTab() {
-    QPushButton* button = new QPushButton();
+    auto button = new tWindowTabberButton();
     DocumentViewer* viewer = new DocumentViewer();
     d->tabButtons.insert(viewer, button);
 
-    connect(viewer, &DocumentViewer::titleChanged, this, [=](QString title) {
+    connect(viewer, &DocumentViewer::titleChanged, this, [this, button](QString title) {
         button->setText(title);
-        if (button->isChecked()) this->setWindowTitle(QStringLiteral("%1 - thePage").arg(title));
-    });
-    connect(button, &QPushButton::clicked, this, [=] {
-        for (QPushButton* button : d->tabButtons.values()) {
-            button->setChecked(false);
-        }
-        button->setChecked(true);
-        ui->stackedWidget->setCurrentWidget(viewer);
-        this->setWindowTitle(QStringLiteral("%1 - thePage").arg(button->text()));
+        if (button->isSelected()) this->setWindowTitle(QStringLiteral("%1 - thePage").arg(title));
     });
     button->setText(viewer->title());
-    button->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
-    button->setCheckable(true);
 
-    ui->tabButtonLayout->addWidget(button);
+    ui->windowTabber->addButton(button);
     ui->stackedWidget->addWidget(viewer);
-    ui->stackedWidget->setCurrentWidget(viewer);
+
+    button->syncWithStackedWidget(ui->stackedWidget, viewer);
 
     return viewer;
 }
@@ -125,7 +116,9 @@ DocumentViewer* MainWindow::newTab() {
 void MainWindow::on_stackedWidget_currentChanged(int arg1) {
     QWidget* w = ui->stackedWidget->widget(arg1);
     if (w) {
-        d->tabButtons.value(static_cast<DocumentViewer*>(w))->click();
+        this->setWindowTitle(QStringLiteral("%1 - thePage").arg(static_cast<DocumentViewer*>(w)->title()));
+    } else {
+        this->setWindowTitle(tr("thePage"));
     }
 }
 
@@ -144,9 +137,10 @@ void MainWindow::on_actionOpen_triggered() {
     dialog->setAcceptMode(QFileDialog::AcceptOpen);
     dialog->setNameFilters({"PDF Documents (*.pdf)"});
     dialog->setFileMode(QFileDialog::AnyFile);
-    connect(dialog, &QFileDialog::fileSelected, this, [=](QString file) {
+    connect(dialog, &QFileDialog::fileSelected, this, [this](QString file) {
         DocumentViewer* tab = newTab();
         tab->openFile(QUrl::fromLocalFile(file));
+        ui->stackedWidget->setCurrentWidget(tab);
     });
     connect(dialog, &QFileDialog::finished, dialog, &QFileDialog::deleteLater);
     dialog->open();
@@ -156,12 +150,9 @@ void MainWindow::on_actionClose_Tab_triggered() {
     QWidget* w = ui->stackedWidget->currentWidget();
     if (w) {
         DocumentViewer* tab = static_cast<DocumentViewer*>(w);
-        QPushButton* button = d->tabButtons.take(tab);
         ui->stackedWidget->removeWidget(tab);
-        ui->tabButtonLayout->removeWidget(button);
-        button->deleteLater();
+        ui->windowTabber->removeButton(d->tabButtons.value(tab));
+        d->tabButtons.remove(tab);
         tab->deleteLater();
-
-        if (ui->stackedWidget->count() == 0) newTab();
     }
 }

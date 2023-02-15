@@ -56,54 +56,78 @@
     </message>
 </context>
 <context>
+    <name>LandingPage</name>
+    <message>
+        <location filename="../landingpage.ui" line="14"/>
+        <source>Form</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../landingpage.ui" line="125"/>
+        <source>Get Started</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../landingpage.ui" line="149"/>
+        <source>Open File</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../landingpage.ui" line="152"/>
+        <source>Open a file for viewing</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>MainWindow</name>
     <message>
-        <location filename="../mainwindow.ui" line="132"/>
-        <location filename="../../../build-thepage-Chroot_6-Debug/application/thepage_autogen/include/ui_mainwindow.h" line="163"/>
+        <location filename="../mainwindow.ui" line="122"/>
+        <location filename="../../../build-thepage-Chroot_6-Debug/application/thepage_autogen/include/ui_mainwindow.h" line="157"/>
         <source>Exit</source>
         <translation>Sluiten</translation>
     </message>
     <message>
-        <location filename="../mainwindow.ui" line="135"/>
-        <location filename="../../../build-thepage-Chroot_6-Debug/application/thepage_autogen/include/ui_mainwindow.h" line="165"/>
+        <location filename="../mainwindow.ui" line="125"/>
+        <location filename="../../../build-thepage-Chroot_6-Debug/application/thepage_autogen/include/ui_mainwindow.h" line="159"/>
         <source>Ctrl+Q</source>
         <translation>Ctrl+Q</translation>
     </message>
     <message>
-        <location filename="../mainwindow.ui" line="144"/>
-        <location filename="../../../build-thepage-Chroot_6-Debug/application/thepage_autogen/include/ui_mainwindow.h" line="167"/>
         <source>New Tab</source>
-        <translation>Nieuw Tabblad</translation>
+        <translation type="vanished">Nieuw Tabblad</translation>
     </message>
     <message>
-        <location filename="../mainwindow.ui" line="147"/>
-        <location filename="../../../build-thepage-Chroot_6-Debug/application/thepage_autogen/include/ui_mainwindow.h" line="169"/>
         <source>Ctrl+T</source>
-        <translation>Ctrl+T</translation>
+        <translation type="vanished">Ctrl+T</translation>
     </message>
     <message>
-        <location filename="../mainwindow.ui" line="156"/>
-        <location filename="../../../build-thepage-Chroot_6-Debug/application/thepage_autogen/include/ui_mainwindow.h" line="171"/>
+        <location filename="../mainwindow.ui" line="134"/>
+        <location filename="../../../build-thepage-Chroot_6-Debug/application/thepage_autogen/include/ui_mainwindow.h" line="161"/>
         <source>Open</source>
         <translation>Openen</translation>
     </message>
     <message>
-        <location filename="../mainwindow.ui" line="159"/>
-        <location filename="../../../build-thepage-Chroot_6-Debug/application/thepage_autogen/include/ui_mainwindow.h" line="173"/>
+        <location filename="../mainwindow.ui" line="137"/>
+        <location filename="../../../build-thepage-Chroot_6-Debug/application/thepage_autogen/include/ui_mainwindow.h" line="163"/>
         <source>Ctrl+O</source>
         <translation>Ctrl+O</translation>
     </message>
     <message>
-        <location filename="../mainwindow.ui" line="167"/>
-        <location filename="../../../build-thepage-Chroot_6-Debug/application/thepage_autogen/include/ui_mainwindow.h" line="175"/>
+        <location filename="../mainwindow.ui" line="146"/>
+        <location filename="../../../build-thepage-Chroot_6-Debug/application/thepage_autogen/include/ui_mainwindow.h" line="165"/>
         <source>Close Tab</source>
         <translation>Tabblad Sluiten</translation>
     </message>
     <message>
-        <location filename="../mainwindow.ui" line="170"/>
-        <location filename="../../../build-thepage-Chroot_6-Debug/application/thepage_autogen/include/ui_mainwindow.h" line="177"/>
+        <location filename="../mainwindow.ui" line="149"/>
+        <location filename="../../../build-thepage-Chroot_6-Debug/application/thepage_autogen/include/ui_mainwindow.h" line="167"/>
         <source>Ctrl+W</source>
         <translation>Ctrl+W</translation>
+    </message>
+    <message>
+        <location filename="../mainwindow.cpp" line="121"/>
+        <source>thePage</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
