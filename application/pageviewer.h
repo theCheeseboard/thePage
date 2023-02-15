@@ -20,8 +20,9 @@
 #ifndef PAGEVIEWER_H
 #define PAGEVIEWER_H
 
-#include <QWidget>
 #include "documentviewer.h"
+#include <QCoroTask>
+#include <QWidget>
 
 namespace Ui {
     class PageViewer;
@@ -48,7 +49,7 @@ class PageViewer : public QWidget {
         Ui::PageViewer* ui;
         PageViewerPrivate* d;
 
-        void updatePageImage();
+        QCoro::Task<> updatePageImage();
 
         // QWidget interface
     public:

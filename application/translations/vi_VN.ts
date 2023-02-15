@@ -137,47 +137,47 @@
 <context>
     <name>PageViewer</name>
     <message>
-        <location filename="../pageviewer.cpp" line="147"/>
+        <location filename="../pageviewer.cpp" line="150"/>
         <source>For text %1</source>
         <translation>Cho văn bản %1</translation>
     </message>
     <message>
-        <location filename="../pageviewer.cpp" line="148"/>
+        <location filename="../pageviewer.cpp" line="151"/>
         <source>Copy</source>
         <translation>Chép</translation>
     </message>
     <message>
-        <location filename="../pageviewer.cpp" line="151"/>
+        <location filename="../pageviewer.cpp" line="154"/>
         <source>Digital Rights Management</source>
         <translation>Quản lý bản quyền kỹ thuật số</translation>
     </message>
     <message>
-        <location filename="../pageviewer.cpp" line="152"/>
+        <location filename="../pageviewer.cpp" line="155"/>
         <source>The author of this document prohibits you from copying text and images.</source>
         <translation>Tác giả tài liệu này cấm bạn chép văn bản và hình ảnh.</translation>
     </message>
     <message>
-        <location filename="../pageviewer.cpp" line="155"/>
+        <location filename="../pageviewer.cpp" line="158"/>
         <source>Copy Anyway</source>
         <translation>Bỏ qua và chép</translation>
     </message>
     <message>
-        <location filename="../pageviewer.cpp" line="194"/>
+        <location filename="../pageviewer.cpp" line="197"/>
         <source>Visit Link</source>
         <translation>Truy cập liên kết</translation>
     </message>
     <message>
-        <location filename="../pageviewer.cpp" line="195"/>
+        <location filename="../pageviewer.cpp" line="198"/>
         <source>Visit the link %1?</source>
         <translation>Truy cập liên kết %1?</translation>
     </message>
     <message>
-        <location filename="../pageviewer.cpp" line="196"/>
+        <location filename="../pageviewer.cpp" line="199"/>
         <source>Make sure it&apos;s a place you trust; the web can be scary!</source>
         <translation>Đảm bảo đó là nơi bạn tin tưởng; nhớ Internet có thể chứa đồ độc hại!</translation>
     </message>
     <message>
-        <location filename="../pageviewer.cpp" line="199"/>
+        <location filename="../pageviewer.cpp" line="202"/>
         <source>Visit</source>
         <translation>Truy cập</translation>
     </message>

@@ -20,35 +20,35 @@
 #include "pageviewer.h"
 #include "ui_pageviewer.h"
 
-#include <QPainter>
 #include <QCache>
-#include <page.h>
-#include <QRubberBand>
-#include <QMouseEvent>
-#include <tlogger.h>
-#include <QMenu>
 #include <QClipboard>
-#include <document.h>
-#include <QMessageBox>
-#include <QPushButton>
 #include <QDesktopServices>
+#include <QMenu>
+#include <QMessageBox>
+#include <QMouseEvent>
+#include <QPainter>
+#include <QPushButton>
+#include <QRubberBand>
+#include <document.h>
+#include <page.h>
+#include <tlogger.h>
 
 struct PageViewerPrivate {
-    DocumentViewer* viewer;
-    Page* page;
-    double zoom = 1;
+        DocumentViewer* viewer;
+        Page* page;
+        double zoom = 1;
 
-    static QCache<PageViewer*, QImage> pageImages;
-    bool pageLoadRequested = false;
-    bool mousePressed = false;
+        static QCache<PageViewer*, QImage> pageImages;
+        bool pageLoadRequested = false;
+        bool mousePressed = false;
 
-    DocumentViewer::DocumentMode documentMode;
+        DocumentViewer::DocumentMode documentMode;
 
-    QRubberBand* selectionBand;
-    QPoint selectionOrigin;
+        QRubberBand* selectionBand;
+        QPoint selectionOrigin;
 };
 
-QCache<PageViewer*, QImage> PageViewerPrivate::pageImages(536870912); //512 MiB
+QCache<PageViewer*, QImage> PageViewerPrivate::pageImages(536870912); // 512 MiB
 
 PageViewer::PageViewer(DocumentViewer* viewer) :
     QWidget(viewer),
@@ -83,25 +83,28 @@ void PageViewer::setZoom(double zoom) {
     d->zoom = zoom;
     updateGeometry();
 
-//    d->pageImages.remove(this);
+    //    d->pageImages.remove(this);
 }
 
 void PageViewer::setDocumentMode(DocumentViewer::DocumentMode mode) {
     d->documentMode = mode;
 }
 
-void PageViewer::updatePageImage() {
-    if (d->pageLoadRequested) return;
+QCoro::Task<> PageViewer::updatePageImage() {
+    if (d->pageLoadRequested) co_return;
 
     QPointer<QObject> contextObject(this);
 
-    d->pageLoadRequested = true;
-    d->page->render(d->zoom)->then([ = ](QImage image) {
-        if (!contextObject) return;
+    try {
+        d->pageLoadRequested = true;
+        auto image = co_await d->page->render(d->zoom);
+        if (!contextObject) co_return;
         d->pageImages.insert(this, new QImage(image), image.sizeInBytes());
         d->pageLoadRequested = false;
         this->update();
-    });
+    } catch (ConcurrentRenderException) {
+        // ignore
+    }
 }
 
 QSize PageViewer::sizeHint() const {
@@ -142,10 +145,10 @@ void PageViewer::mouseReleaseEvent(QMouseEvent* event) {
         QMenu* menu = new QMenu(this);
         for (const Page::SelectionResult& result : qAsConst(results)) {
             if (result.text.isEmpty()) {
-                //TODO: Images
+                // TODO: Images
             } else {
                 menu->addSection(tr("For text %1").arg(menu->fontMetrics().elidedText(QLocale().quoteString(result.text).trimmed(), Qt::ElideMiddle, SC_DPI(300))));
-                menu->addAction(QIcon::fromTheme("edit-copy"), tr("Copy"), [ = ] {
+                menu->addAction(QIcon::fromTheme("edit-copy"), tr("Copy"), [=] {
                     if (d->viewer->document()->isDrmEnforced(Document::Copy) && !d->viewer->isDRMBypassed(Document::Copy)) {
                         QMessageBox* messageBox = new QMessageBox(this);
                         messageBox->setWindowTitle(tr("Digital Rights Management"));
@@ -153,7 +156,7 @@ void PageViewer::mouseReleaseEvent(QMouseEvent* event) {
                         messageBox->setIcon(QMessageBox::Information);
                         messageBox->addButton(QMessageBox::Ok);
                         QPushButton* copyButton = messageBox->addButton(tr("Copy Anyway"), QMessageBox::DestructiveRole);
-                        connect(messageBox, &QMessageBox::buttonClicked, this, [ = ](QAbstractButton * button) {
+                        connect(messageBox, &QMessageBox::buttonClicked, this, [=](QAbstractButton* button) {
                             if (button == copyButton) {
                                 d->viewer->setBypassDRMLimitation(Document::Copy);
                                 QApplication::clipboard()->setText(result.text);
@@ -169,19 +172,19 @@ void PageViewer::mouseReleaseEvent(QMouseEvent* event) {
             }
         }
 
-        connect(menu, &QMenu::aboutToHide, this, [ = ] {
+        connect(menu, &QMenu::aboutToHide, this, [=] {
             menu->deleteLater();
             d->selectionBand->hide();
         });
         menu->popup(event->globalPos());
     }
 
-    //See if there is a click action
+    // See if there is a click action
     QVariantMap action = d->page->clickAction((event->pos() - documentRect.topLeft()) / d->zoom);
     if (action.value("type").toString() == "link") {
         QString linkType = action.value("linkType").toString();
         if (linkType == "viewport") {
-            //Go to a different page
+            // Go to a different page
             double offsetTop = action.value("offsetTop", -1).toDouble();
             double offsetLeft = action.value("offfsetLeft", -1).toDouble();
             emit navigate(action.value("page").toInt(), offsetTop, offsetLeft);
@@ -197,7 +200,7 @@ void PageViewer::mouseReleaseEvent(QMouseEvent* event) {
             messageBox->setIcon(QMessageBox::Information);
             messageBox->addButton(QMessageBox::Cancel);
             QPushButton* acceptButton = messageBox->addButton(tr("Visit"), QMessageBox::AcceptRole);
-            connect(messageBox, &QMessageBox::buttonClicked, this, [ = ](QAbstractButton * button) {
+            connect(messageBox, &QMessageBox::buttonClicked, this, [=](QAbstractButton* button) {
                 if (button == acceptButton) {
                     QDesktopServices::openUrl(url);
                 }
@@ -206,7 +209,7 @@ void PageViewer::mouseReleaseEvent(QMouseEvent* event) {
             messageBox->open();
         }
     }
-//    tDebug("PageViewer") << action.value("type").toString();
+    //    tDebug("PageViewer") << action.value("type").toString();
 }
 
 void PageViewer::mouseMoveEvent(QMouseEvent* event) {
@@ -219,9 +222,9 @@ void PageViewer::mouseMoveEvent(QMouseEvent* event) {
         documentRect.setSize(this->sizeHint());
         documentRect.moveCenter(QPoint(this->width() / 2, this->height() / 2));
 
-        //See if there is a click action
+        // See if there is a click action
         QVariantMap action = d->page->clickAction((event->pos() - documentRect.topLeft()) / d->zoom);
-//        tDebug("PageViewer") << action.value("type").toString();
+        //        tDebug("PageViewer") << action.value("type").toString();
         if (action.value("type").toString() == "link") {
             this->setCursor(QCursor(Qt::PointingHandCursor));
         } else {

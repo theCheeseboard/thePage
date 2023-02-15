@@ -38,7 +38,7 @@ class PopplerPage : public Page {
         // Page interface
     public:
         QSizeF pageSize();
-        tPromise<QImage>* render(double zoom);
+        QCoro::Task<QImage> render(double zoom);
         QList<SelectionResult> selectionMade(QRect rect);
         QVariantMap clickAction(QPointF point);
 };

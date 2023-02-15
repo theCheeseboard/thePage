@@ -20,6 +20,7 @@
 #include "popplerdocument.h"
 
 #include "popplerpage.h"
+#include <QUrl>
 
 struct PopplerDocumentPrivate {
         std::unique_ptr<Poppler::Document> document;

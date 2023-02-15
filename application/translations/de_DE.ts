@@ -137,47 +137,47 @@
 <context>
     <name>PageViewer</name>
     <message>
-        <location filename="../pageviewer.cpp" line="147"/>
+        <location filename="../pageviewer.cpp" line="150"/>
         <source>For text %1</source>
         <translation>Für Text %1</translation>
     </message>
     <message>
-        <location filename="../pageviewer.cpp" line="148"/>
+        <location filename="../pageviewer.cpp" line="151"/>
         <source>Copy</source>
         <translation>Kopieren</translation>
     </message>
     <message>
-        <location filename="../pageviewer.cpp" line="151"/>
+        <location filename="../pageviewer.cpp" line="154"/>
         <source>Digital Rights Management</source>
         <translation>Kopierschutz</translation>
     </message>
     <message>
-        <location filename="../pageviewer.cpp" line="152"/>
+        <location filename="../pageviewer.cpp" line="155"/>
         <source>The author of this document prohibits you from copying text and images.</source>
         <translation>Der Autor dieses Dokumentes verbietet es dir Text und Bilder zu kopieren.</translation>
     </message>
     <message>
-        <location filename="../pageviewer.cpp" line="155"/>
+        <location filename="../pageviewer.cpp" line="158"/>
         <source>Copy Anyway</source>
         <translation>Trotzdem Kopieren</translation>
     </message>
     <message>
-        <location filename="../pageviewer.cpp" line="194"/>
+        <location filename="../pageviewer.cpp" line="197"/>
         <source>Visit Link</source>
         <translation>Link besuchen</translation>
     </message>
     <message>
-        <location filename="../pageviewer.cpp" line="195"/>
+        <location filename="../pageviewer.cpp" line="198"/>
         <source>Visit the link %1?</source>
         <translation>Link %1 besuchen?</translation>
     </message>
     <message>
-        <location filename="../pageviewer.cpp" line="196"/>
+        <location filename="../pageviewer.cpp" line="199"/>
         <source>Make sure it&apos;s a place you trust; the web can be scary!</source>
         <translation>Stelle sicher, dass es ein Ort ist, dem du vertraust. Das Web kann beängstigend sein!</translation>
     </message>
     <message>
-        <location filename="../pageviewer.cpp" line="199"/>
+        <location filename="../pageviewer.cpp" line="202"/>
         <source>Visit</source>
         <translation>Besuchen</translation>
     </message>

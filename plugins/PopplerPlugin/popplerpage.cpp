@@ -19,7 +19,10 @@
  * *************************************/
 #include "popplerpage.h"
 
+#include <QCoroFuture>
 #include <QImage>
+#include <QtConcurrent>
+#include <texception.h>
 
 struct PopplerPagePrivate {
         uint renders = 0;
@@ -40,13 +43,12 @@ QSizeF PopplerPage::pageSize() {
     return d->page->pageSizeF();
 }
 
-tPromise<QImage>* PopplerPage::render(double zoom) {
+QCoro::Task<QImage> PopplerPage::render(double zoom) {
     uint currentRender = ++d->renders;
 
-    return TPROMISE_CREATE_NEW_THREAD(QImage, {
+    co_return co_await QtConcurrent::run([this](uint currentRender, double zoom) {
         if (d->renders != currentRender) {
-            rej("Started another render");
-            return;
+            throw ConcurrentRenderException();
         }
 
         // Render at more DPI then we need and then scale down to improve picture quality
@@ -66,14 +68,14 @@ tPromise<QImage>* PopplerPage::render(double zoom) {
             QVariant::fromValue(QVariantMap({{"this", QVariant::fromValue(this)}, {"currentRender", currentRender}})));
 
         if (d->renders != currentRender) {
-            rej("Started another render");
-            return;
+            throw ConcurrentRenderException();
         }
 
         QSize newSize = image.size() / 2;
         image = image.scaled(newSize, Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
-        res(image);
-    });
+        return image;
+    },
+        currentRender, zoom);
 }
 
 QList<PopplerPage::SelectionResult> PopplerPage::selectionMade(QRect rect) {

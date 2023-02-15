@@ -20,9 +20,10 @@
 #ifndef PAGE_H
 #define PAGE_H
 
+#include <QCoroTask>
 #include <QImage>
 #include <QObject>
-#include <tpromise.h>
+#include <texception.h>
 
 class Page : public QObject {
         Q_OBJECT
@@ -30,17 +31,20 @@ class Page : public QObject {
         explicit Page();
 
         struct SelectionResult {
-            QString text;
-            QImage image;
+                QString text;
+                QImage image;
         };
 
         virtual QSizeF pageSize() = 0;
-        virtual tPromise<QImage>* render(double zoom = 1) = 0;
+        virtual QCoro::Task<QImage> render(double zoom = 1) = 0;
         virtual QList<SelectionResult> selectionMade(QRect rect) = 0;
         virtual QVariantMap clickAction(QPointF point) = 0;
 
     signals:
+};
 
+class LIBCONTEMPORARY_EXPORT ConcurrentRenderException : public tException {
+        T_EXCEPTION(ConcurrentRenderException)
 };
 
 #endif // PAGE_H

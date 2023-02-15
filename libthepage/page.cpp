@@ -19,6 +19,8 @@
  * *************************************/
 #include "page.h"
 
-Page::Page() : QObject() {
+T_EXCEPTION_IMPL(ConcurrentRenderException)
 
+Page::Page() :
+    QObject() {
 }
