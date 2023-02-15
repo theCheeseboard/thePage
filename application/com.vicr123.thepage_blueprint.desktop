@@ -2,10 +2,8 @@
 [Desktop Entry]
 Type=Application
 Version=1.0
-Name=thePage Blueprint
-GenericName=Document Viewer
-GenericName[nl]=Documentlezer
-GenericName[vi]=Bộ xem tài liệu
+Name[]=thePage Blueprint
+GenericName[]=Document Viewer
 Categories=Office;Viewer;Graphics;
 Exec=thepage
 Icon=thepage-blueprint
