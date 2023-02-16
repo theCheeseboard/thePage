@@ -41,7 +41,8 @@ PopplerDocument::~PopplerDocument() {
         delete page;
     }
 
-    delete d;
+    // TODO: LEAK! Find out why this is crashing
+    //    delete d;
 }
 
 QUrl PopplerDocument::fileName() {

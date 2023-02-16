@@ -86,13 +86,13 @@
     <name>MainWindow</name>
     <message>
         <location filename="../mainwindow.ui" line="122"/>
-        <location filename="../../../build-thepage-Chroot_6-Debug/application/thepage_autogen/include/ui_mainwindow.h" line="157"/>
+        <location filename="../../../build-thepage-Chroot_6-Debug/application/thepage_autogen/include/ui_mainwindow.h" line="160"/>
         <source>Exit</source>
         <translation>Keluar</translation>
     </message>
     <message>
         <location filename="../mainwindow.ui" line="125"/>
-        <location filename="../../../build-thepage-Chroot_6-Debug/application/thepage_autogen/include/ui_mainwindow.h" line="159"/>
+        <location filename="../../../build-thepage-Chroot_6-Debug/application/thepage_autogen/include/ui_mainwindow.h" line="162"/>
         <source>Ctrl+Q</source>
         <translation type="unfinished"></translation>
     </message>
@@ -102,30 +102,42 @@
     </message>
     <message>
         <location filename="../mainwindow.ui" line="134"/>
-        <location filename="../../../build-thepage-Chroot_6-Debug/application/thepage_autogen/include/ui_mainwindow.h" line="161"/>
+        <location filename="../../../build-thepage-Chroot_6-Debug/application/thepage_autogen/include/ui_mainwindow.h" line="164"/>
         <source>Open</source>
         <translation>Buka</translation>
     </message>
     <message>
         <location filename="../mainwindow.ui" line="137"/>
-        <location filename="../../../build-thepage-Chroot_6-Debug/application/thepage_autogen/include/ui_mainwindow.h" line="163"/>
+        <location filename="../../../build-thepage-Chroot_6-Debug/application/thepage_autogen/include/ui_mainwindow.h" line="166"/>
         <source>Ctrl+O</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../mainwindow.ui" line="146"/>
-        <location filename="../../../build-thepage-Chroot_6-Debug/application/thepage_autogen/include/ui_mainwindow.h" line="165"/>
+        <location filename="../../../build-thepage-Chroot_6-Debug/application/thepage_autogen/include/ui_mainwindow.h" line="168"/>
         <source>Close Tab</source>
         <translation>Tutup Tab</translation>
     </message>
     <message>
         <location filename="../mainwindow.ui" line="149"/>
-        <location filename="../../../build-thepage-Chroot_6-Debug/application/thepage_autogen/include/ui_mainwindow.h" line="167"/>
+        <location filename="../../../build-thepage-Chroot_6-Debug/application/thepage_autogen/include/ui_mainwindow.h" line="170"/>
         <source>Ctrl+W</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="121"/>
+        <location filename="../mainwindow.ui" line="154"/>
+        <location filename="../../../build-thepage-Chroot_6-Debug/application/thepage_autogen/include/ui_mainwindow.h" line="172"/>
+        <source>Print</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../mainwindow.ui" line="157"/>
+        <location filename="../../../build-thepage-Chroot_6-Debug/application/thepage_autogen/include/ui_mainwindow.h" line="174"/>
+        <source>Ctrl+P</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../mainwindow.cpp" line="125"/>
         <source>thePage</source>
         <translation type="unfinished"></translation>
     </message>
@@ -176,6 +188,14 @@
         <location filename="../pageviewer.cpp" line="202"/>
         <source>Visit</source>
         <translation>Kunjungi</translation>
+    </message>
+</context>
+<context>
+    <name>PrintController</name>
+    <message>
+        <location filename="../print/printcontroller.cpp" line="35"/>
+        <source>Print %1</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>

@@ -20,6 +20,7 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
+#include "print/printcontroller.h"
 #include <QFileDialog>
 #include <QPushButton>
 #include <tapplication.h>
@@ -57,6 +58,8 @@ MainWindow::MainWindow(QWidget* parent) :
     QMenu* menu = new QMenu(this);
     menu->addAction(ui->actionOpen);
     menu->addAction(ui->actionClose_Tab);
+    menu->addSeparator();
+    menu->addAction(ui->actionPrint);
     menu->addSeparator();
     menu->addMenu(new tHelpMenu(this));
     menu->addAction(ui->actionExit);
@@ -117,8 +120,10 @@ void MainWindow::on_stackedWidget_currentChanged(int arg1) {
     QWidget* w = ui->stackedWidget->widget(arg1);
     if (w) {
         this->setWindowTitle(QStringLiteral("%1 - thePage").arg(static_cast<DocumentViewer*>(w)->title()));
+        ui->actionPrint->setEnabled(true);
     } else {
         this->setWindowTitle(tr("thePage"));
+        ui->actionPrint->setEnabled(false);
     }
 }
 
@@ -155,4 +160,9 @@ void MainWindow::on_actionClose_Tab_triggered() {
         d->tabButtons.remove(tab);
         tab->deleteLater();
     }
+}
+
+void MainWindow::on_actionPrint_triggered() {
+    PrintController* controller = new PrintController(static_cast<DocumentViewer*>(ui->stackedWidget->currentWidget())->document(), this);
+    controller->confirmAndPerformPrint();
 }

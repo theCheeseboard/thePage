@@ -50,6 +50,8 @@ class MainWindow : public QMainWindow {
 
         void on_actionClose_Tab_triggered();
 
+        void on_actionPrint_triggered();
+
     private:
         Ui::MainWindow* ui;
         MainWindowPrivate* d;

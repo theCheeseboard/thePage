@@ -12,6 +12,8 @@ set(SOURCES
     pageviewer.cpp pageviewer.ui
     landingpage.cpp landingpage.ui
 
+    print/printcontroller.cpp
+
     resources.qrc
 )
 
@@ -20,6 +22,8 @@ set(HEADERS
     mainwindow.h
     pageviewer.h
     landingpage.h
+
+    print/printcontroller.h
 )
 
 # Find Apple lproj files

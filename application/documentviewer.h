@@ -47,7 +47,7 @@ class DocumentViewer : public QWidget {
         double zoom();
         DocumentMode documentMode();
 
-        Document* document();
+        QSharedPointer<Document> document();
         void setBypassDRMLimitation(Document::DRMLimitation type);
         bool isDRMBypassed(Document::DRMLimitation type);
 

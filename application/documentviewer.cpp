@@ -20,24 +20,24 @@
 #include "documentviewer.h"
 #include "ui_documentviewer.h"
 
-#include <QFileDialog>
-#include <documentprovidermanager.h>
-#include <page.h>
 #include "pageviewer.h"
-#include <terrorflash.h>
-#include <ttoast.h>
-#include <tlogger.h>
+#include <QFileDialog>
 #include <QScrollBar>
 #include <QScroller>
+#include <documentprovidermanager.h>
+#include <page.h>
+#include <terrorflash.h>
+#include <tlogger.h>
+#include <ttoast.h>
 
 struct DocumentViewerPrivate {
-    Document* currentDocument = nullptr;
-    QList<PageViewer*> viewers;
-    QSet<Document::DRMLimitation> drmBypassed;
+        QSharedPointer<Document> currentDocument;
+        QList<PageViewer*> viewers;
+        QSet<Document::DRMLimitation> drmBypassed;
 
-    DocumentViewer::DocumentMode documentMode = DocumentViewer::Scrolling;
-    double fixateHScrollbar = -1, fixateVScrollbar = -1;
-    int fixateHScrollbarOffset, fixateVScrollbarOffset;
+        DocumentViewer::DocumentMode documentMode = DocumentViewer::Scrolling;
+        double fixateHScrollbar = -1, fixateVScrollbar = -1;
+        int fixateHScrollbarOffset, fixateVScrollbarOffset;
 };
 
 DocumentViewer::DocumentViewer(QWidget* parent) :
@@ -55,23 +55,23 @@ DocumentViewer::DocumentViewer(QWidget* parent) :
 
     ui->scrollArea->setProperty("X-Contemporary-NoInstallScroller", true);
     ui->scrollArea->viewport()->installEventFilter(this);
-    connect(ui->scrollArea->verticalScrollBar(), &QScrollBar::valueChanged, this, [ = ] {
+    connect(ui->scrollArea->verticalScrollBar(), &QScrollBar::valueChanged, this, [=] {
         if (QScroller::scroller(ui->scrollArea)->state() == QScroller::Inactive) updateCurrentPageNumber();
     });
-    connect(ui->scrollArea->verticalScrollBar(), &QScrollBar::rangeChanged, this, [ = ](int min, int max) {
+    connect(ui->scrollArea->verticalScrollBar(), &QScrollBar::rangeChanged, this, [=](int min, int max) {
         if (d->fixateVScrollbar >= 0) {
             ui->scrollArea->verticalScrollBar()->setValue(max * d->fixateVScrollbar - d->fixateVScrollbarOffset);
             d->fixateVScrollbar = -1;
         }
     });
-    connect(ui->scrollArea->horizontalScrollBar(), &QScrollBar::rangeChanged, this, [ = ](int min, int max) {
+    connect(ui->scrollArea->horizontalScrollBar(), &QScrollBar::rangeChanged, this, [=](int min, int max) {
         if (d->fixateHScrollbar >= 0) {
             ui->scrollArea->horizontalScrollBar()->setValue(max * d->fixateHScrollbar - d->fixateHScrollbarOffset);
             d->fixateHScrollbar = -1;
         }
     });
 
-    connect(QScroller::scroller(ui->scrollArea), &QScroller::stateChanged, this, [ = ](QScroller::State state) {
+    connect(QScroller::scroller(ui->scrollArea), &QScroller::stateChanged, this, [=](QScroller::State state) {
         if (state == QScroller::Inactive) updateCurrentPageNumber();
     });
 
@@ -92,9 +92,9 @@ void DocumentViewer::openFile(QUrl file) {
 
     d->drmBypassed.clear();
 
-    Document* document = DocumentProviderManager::instance()->documentFor(file);
+    QSharedPointer<Document> document(DocumentProviderManager::instance()->documentFor(file));
     if (!document) {
-        //Error Error!
+        // Error Error!
         tToast* toast = new tToast(this);
         toast->setTitle(tr("File Not Readable"));
         toast->setText(tr("Sorry, that file can't be opened."));
@@ -115,7 +115,7 @@ void DocumentViewer::showOpenFileDialog() {
     dialog->setAcceptMode(QFileDialog::AcceptOpen);
     dialog->setNameFilters({"PDF Documents (*.pdf)"});
     dialog->setFileMode(QFileDialog::AnyFile);
-    connect(dialog, &QFileDialog::fileSelected, this, [ = ](QString file) {
+    connect(dialog, &QFileDialog::fileSelected, this, [=](QString file) {
         openFile(QUrl::fromLocalFile(file));
     });
     connect(dialog, &QFileDialog::finished, dialog, &QFileDialog::deleteLater);
@@ -134,7 +134,7 @@ DocumentViewer::DocumentMode DocumentViewer::documentMode() {
     return d->documentMode;
 }
 
-Document* DocumentViewer::document() {
+QSharedPointer<Document> DocumentViewer::document() {
     return d->currentDocument;
 }
 
@@ -207,13 +207,13 @@ void DocumentViewer::updateCurrentView() {
             PageViewer* viewer = new PageViewer(this);
             viewer->setPage(d->currentDocument->page(i));
             viewer->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Fixed);
-            connect(viewer, &PageViewer::navigate, this, [ = ](int page, double offsetTop, double offsetLeft) {
+            connect(viewer, &PageViewer::navigate, this, [=](int page, double offsetTop, double offsetLeft) {
                 QPointF scrollPoint(d->viewers.at(page)->geometry().left(), d->viewers.at(page)->geometry().top());
                 if (offsetTop > 0) scrollPoint.ry() += d->viewers.at(page)->geometry().height() * offsetTop;
                 if (offsetLeft > 0) scrollPoint.rx() += d->viewers.at(page)->geometry().width() * offsetLeft;
                 QScroller::scroller(ui->scrollArea)->scrollTo(scrollPoint, 500);
             });
-            connect(viewer, &PageViewer::changeZoom, this, [ = ](double zoom, QPoint fixationPoint) {
+            connect(viewer, &PageViewer::changeZoom, this, [=](double zoom, QPoint fixationPoint) {
                 QPoint viewerPoint = ui->scrollAreaWidgetContents->mapFromGlobal(viewer->mapToGlobal(fixationPoint));
                 QPoint scrollerPoint = ui->scrollArea->mapFromGlobal(viewer->mapToGlobal(fixationPoint));
                 d->fixateHScrollbar = static_cast<double>(viewerPoint.x()) / ui->scrollArea->horizontalScrollBar()->maximum();

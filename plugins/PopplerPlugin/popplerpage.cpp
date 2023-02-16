@@ -47,9 +47,9 @@ QCoro::Task<QImage> PopplerPage::render(double zoom) {
     uint currentRender = ++d->renders;
 
     co_return co_await QtConcurrent::run([this](uint currentRender, double zoom) {
-        if (d->renders != currentRender) {
-            throw ConcurrentRenderException();
-        }
+        //        if (d->renders != currentRender) {
+        //            throw ConcurrentRenderException();
+        //        }
 
         // Render at more DPI then we need and then scale down to improve picture quality
         QImage image = d->page->renderToImage(
@@ -61,15 +61,15 @@ QCoro::Task<QImage> PopplerPage::render(double zoom) {
             [](const QVariant& metaVariant) -> bool {
                 QVariantMap meta = metaVariant.toMap();
                 if (meta.value("currentRender").toUInt() != meta.value("this").value<PopplerPage*>()->d->renders) {
-                    return true;
+                    return false;
                 }
                 return false;
             },
             QVariant::fromValue(QVariantMap({{"this", QVariant::fromValue(this)}, {"currentRender", currentRender}})));
 
-        if (d->renders != currentRender) {
-            throw ConcurrentRenderException();
-        }
+        //        if (d->renders != currentRender) {
+        //            throw ConcurrentRenderException();
+        //        }
 
         QSize newSize = image.size() / 2;
         image = image.scaled(newSize, Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
