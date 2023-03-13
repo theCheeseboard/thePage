@@ -17,12 +17,12 @@
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * *************************************/
-#ifndef THEFILEPLUGININTERFACE_H
-#define THEFILEPLUGININTERFACE_H
+#ifndef THEPAGEPLUGININTERFACE_H
+#define THEPAGEPLUGININTERFACE_H
 
 #include <plugins/plugininterface.h>
 
 #define PluginInterface_iid "com.vicr123.thepage.PluginInterface/1.0"
 Q_DECLARE_INTERFACE(PluginInterface, PluginInterface_iid);
 
-#endif // THEFILEPLUGININTERFACE_H
+#endif // THEPAGEPLUGININTERFACE_H

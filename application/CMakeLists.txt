@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.21.0)
 
 project(thepage VERSION 1.0.0 LANGUAGES CXX)
 
-find_package(Qt6 REQUIRED COMPONENTS Widgets DBus Sql PrintSupport)
+find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets DBus Sql PrintSupport)
 find_package(libcontemporary REQUIRED)
 
 set(SOURCES
@@ -62,7 +62,7 @@ cntp_target_desktop_file(thepage
 cntp_defaults_file(thepage
     DEFAULTS_FILE thepage.conf)
 
-target_link_libraries(thepage Qt6::Widgets Qt6::DBus Qt6::Sql Qt6::PrintSupport libcontemporary libthepage)
+target_link_libraries(thepage Qt::Widgets Qt::DBus Qt::Sql Qt::PrintSupport libcontemporary libthepage)
 target_include_directories(thepage PUBLIC ../libthepage/)
 
 install(TARGETS thepage
