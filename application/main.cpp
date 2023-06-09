@@ -32,7 +32,7 @@ int main(int argc, char* argv[]) {
     a.setApplicationShareDir("thepage");
     a.installTranslators();
 
-    a.setApplicationVersion("2.0");
+    a.setApplicationVersion("2.0.1");
     a.setGenericName(QApplication::translate("main", "Document Viewer"));
     a.setApplicationLicense(tApplication::Gpl3OrLater);
     a.setCopyrightHolder("Victor Tran");
@@ -50,7 +50,7 @@ int main(int argc, char* argv[]) {
     tSettings::registerDefaults("/etc/theSuite/thepage/defaults.conf");
 
     auto pluginManager = tPluginManager<PluginInterface>::instance();
-    pluginManager->setLibraryDirectory("thefile");
+    pluginManager->setLibraryDirectory("thepage");
 
     QCommandLineParser parser;
     parser.addHelpOption();
