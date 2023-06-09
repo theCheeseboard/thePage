@@ -210,12 +210,12 @@
         <translation>Belge Görüntüleyici</translation>
     </message>
     <message>
-        <location filename="../main.cpp" line="59"/>
+        <location filename="../main.cpp" line="58"/>
         <source>file</source>
         <translation>dosya</translation>
     </message>
     <message>
-        <location filename="../main.cpp" line="59"/>
+        <location filename="../main.cpp" line="58"/>
         <source>File to open</source>
         <translation>Açılacak dosya</translation>
     </message>

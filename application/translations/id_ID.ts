@@ -206,12 +206,12 @@
         <translation>Penampil Dokumen</translation>
     </message>
     <message>
-        <location filename="../main.cpp" line="59"/>
+        <location filename="../main.cpp" line="58"/>
         <source>file</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../main.cpp" line="59"/>
+        <location filename="../main.cpp" line="58"/>
         <source>File to open</source>
         <translation>File yang ingin dibuka</translation>
     </message>

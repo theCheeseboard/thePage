@@ -210,12 +210,12 @@
         <translation>Dokumenten Viewer</translation>
     </message>
     <message>
-        <location filename="../main.cpp" line="59"/>
+        <location filename="../main.cpp" line="58"/>
         <source>file</source>
         <translation>Datei</translation>
     </message>
     <message>
-        <location filename="../main.cpp" line="59"/>
+        <location filename="../main.cpp" line="58"/>
         <source>File to open</source>
         <translation>Datei zum öffnen</translation>
     </message>

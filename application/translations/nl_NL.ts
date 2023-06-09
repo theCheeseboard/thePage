@@ -210,12 +210,12 @@
         <translation>Documentlezer</translation>
     </message>
     <message>
-        <location filename="../main.cpp" line="59"/>
+        <location filename="../main.cpp" line="58"/>
         <source>file</source>
         <translation>bestand</translation>
     </message>
     <message>
-        <location filename="../main.cpp" line="59"/>
+        <location filename="../main.cpp" line="58"/>
         <source>File to open</source>
         <translation>Te openen bestand</translation>
     </message>

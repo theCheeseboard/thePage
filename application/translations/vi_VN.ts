@@ -210,12 +210,12 @@
         <translation>Bộ xem tài liệu</translation>
     </message>
     <message>
-        <location filename="../main.cpp" line="59"/>
+        <location filename="../main.cpp" line="58"/>
         <source>file</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../main.cpp" line="59"/>
+        <location filename="../main.cpp" line="58"/>
         <source>File to open</source>
         <translation type="unfinished"></translation>
     </message>

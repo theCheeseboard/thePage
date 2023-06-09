@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.4.0)
 
 project(lib VERSION 1.0.0 LANGUAGES CXX)
 
-find_package(Qt6 REQUIRED COMPONENTS Widgets Multimedia Concurrent Network)
+find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets Multimedia Concurrent Network)
 find_package(libcontemporary REQUIRED)
 
 set(SOURCES
@@ -39,7 +39,7 @@ set_target_properties(libthepage PROPERTIES
         MACOSX_FRAMEWORK_IDENTIFIER com.vicr123.libthepage
         VERSION 1.0.0)
 
-target_link_libraries(libthepage Qt6::Widgets Qt6::DBus Qt6::Multimedia Qt6::Concurrent Qt6::Network libcontemporary)
+target_link_libraries(libthepage Qt::Widgets Qt::DBus Qt::Multimedia Qt::Concurrent Qt::Network libcontemporary)
 target_compile_definitions(libthepage PRIVATE LIBTHEBRANCH_LIBRARY)
 
 IF(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
